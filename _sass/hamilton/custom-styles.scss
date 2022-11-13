@@ -1,0 +1,15 @@
+// Import custom font
+@font-face {
+  font-family: "zeroesone";
+  src: url("../fonts/ZeroesOne.ttf");
+}
+
+// Set title font
+.site-title {
+    font-family: "zeroesone"
+}
+
+// Scale log svg file
+.author-avatar {
+    transform: scale(4.0);
+}

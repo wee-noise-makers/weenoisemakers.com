@@ -1,3 +1,5 @@
-# Wee Noise Maker
+---
+layout: home
+---
 
 Work in progress...

@@ -1,1 +1,35 @@
-theme: jekyll-theme-cayman
+title: Wee Noise Maker
+description: "Wee Noise Maker"
+baseurl: ""
+url: "weenoisemaker.com"
+
+avatar: logo.svg
+subscribe: false
+# location:
+# google_site_verification:
+google_analytics: G-MNGKK0CVHD
+lang: en
+skin: midnight
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+remote_theme: ngzhio/jekyll-theme-hamilton
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
