@@ -4,6 +4,12 @@
 - title: GitHub
   url: https://github.com/wee-noise-maker
   icon: fab fa-github
+- title: Tindie
+  url: https://www.tindie.com/stores/fabien-c/
+  icon: fas fa-shopping-bag
+- title: YouTube
+  url: https://www.youtube.com/channel/UCgoJ3su6MfqVCd2sr4hLJOA
+  icon: fab fa-youtube
 - title: Twitter
   url: https://twitter.com/weenoisemaker
   icon: fab fa-twitter
