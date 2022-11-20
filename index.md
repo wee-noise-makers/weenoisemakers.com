@@ -4,12 +4,20 @@ layout: my_home
 
 Work in progress...
 
-<canvas id="lookup_table" width="750" height="300"></canvas>
-<canvas id="lookup_output" width="750" height="300"></canvas>
+<canvas id="lookup_table" width="750" height="200"></canvas>
+<canvas id="lookup_output" width="750" height="200"></canvas>
 <form class="canvas-controls" id="lookup-phase-increment-form">
   <div class="input-group">
     <input type="range" id="phase-increment" name="phase_increment" min="0.1" max="10" value="2" step="0.01" />
     <label for="phase-increment">Phase Increment</label>
+  </div>
+</form>
+
+<canvas id="morph" width="750" height="300"></canvas>
+<form class="morph-controls" id="morph-form">
+  <div class="input-group">
+    <input type="range" id="timber" name="timber" min="0.1" max="10" value="2" step="0.01" />
+    <label for="timber">Timber</label>
   </div>
 </form>
 
@@ -192,11 +200,18 @@ function start_animations() {
                 mult = 0.5;
             }
 
-            this.ctx.strokeStyle = color;
-            this.ctx.fillStyle = color;
+            var cnt = 0;
             for(let t = 0; t <= 1.0; t += interval) {
                 let out = func(t);
                 if (out != null) {
+                    if (Array.isArray(color)) {
+                        this.ctx.strokeStyle = color[cnt % color.length];
+                        this.ctx.fillStyle = color[cnt % color.length];
+                        cnt += 1;
+                    } else {
+                        this.ctx.strokeStyle = color;
+                        this.ctx.fillStyle = color;
+                    }
                     let x = left + Math.min(t * max_width, max_width);
                     let y = bottom - origin - (out * mult * max_height);
                     if(y <= bottom && y >= top) {
@@ -307,13 +322,56 @@ function start_animations() {
         return v1 + ((v2 - v1) * (dt / 0.05));
     }
 
+    const discrete_color_gradiant = [
+      '#ff0000', 
+      '#f2000a', 
+      '#e60014', 
+      '#d9001f', 
+      '#cc0029', 
+      '#bf0033', 
+      '#b2003d', 
+      '#a60047', 
+      '#990052', 
+      '#8c005c', 
+      '#800066', 
+      '#730070', 
+      '#66007a', 
+      '#590085', 
+      '#4d008f', 
+      '#400099', 
+      '#3300a3', 
+      '#2600ad', 
+      '#1900b8', 
+      '#0d00c2', 
+      '#0000cc', 
+      '#0d00c2', 
+      '#1a00b8', 
+      '#2600ad', 
+      '#3300a3', 
+      '#400099', 
+      '#4c008f', 
+      '#590085', 
+      '#66007a', 
+      '#730070', 
+      '#800066', 
+      '#8c005c', 
+      '#990052', 
+      '#a60047', 
+      '#b2003d', 
+      '#bf0033', 
+      '#cc0029', 
+      '#d9001f', 
+      '#e60014', 
+      '#f2000a',
+      '#ff0000'
+      ];
     (function lookup_table() {
         const grapher = new Grapher("lookup_table");
         grapher.centered = true;
 
         function draw(params) {
             grapher.clear();
-            grapher.plot_discrete((t) => phase_func(+params.phase_increment,t), +params.phase_increment / 100, true, "red");
+            grapher.plot_discrete((t) => phase_func(+params.phase_increment,t), +params.phase_increment / 100, true, discrete_color_gradiant);
             grapher.plot_discrete((t) => lookup_table_func(+params.phase_increment,t), 0.05, false, "yellow");
             grapher.draw_frame("Index", "Lookup table");
         }
@@ -327,12 +385,56 @@ function start_animations() {
 
         function draw(params) {
             grapher.clear();
-            grapher.plot_discrete((t) => output_func(+params.phase_increment, t), 0.01, true, "red");
+            grapher.plot_discrete((t) => output_func(+params.phase_increment, t), 0.01, true, discrete_color_gradiant);
             grapher.plot_function((t) => output_interp_func(+params.phase_increment, t), "green");
             grapher.draw_frame();
         }
 
         form_driven_canvas("lookup-phase-increment-form", draw);
+    })();
+
+    function morph_func(frequency, timber, color, t) {
+        const saw = (((frequency * t) % 1.0) * 2) - 1;
+
+        const saw2 = (((frequency * t + 0.25) % 1.0) * 2) - 1;
+        const triangle = saw2 < 0 ? saw2 * 2 + 1 : 2 - (saw2 * 2 + 1);
+        const square = ((frequency * t % 1.0 < 0.5) * 2) - 1;
+        const sine = Math.sin(t * frequency * Math.PI * 2);
+
+        var f1;
+        var f2;
+        var balance;
+        
+        if (timber <= 3.3) {
+           f1 = saw;
+           f2 = triangle;
+           balance = (timber * 3) / 10;
+        } else if (timber <= 6.6) {
+           f1 = square;
+           f2 = saw;
+           balance = ((timber - 3.3) * 3) / 10;
+        } else {
+           const pw = ((timber - 6.6) * 3) / 20;
+
+           f1 = sine;
+           f2 = ((frequency * t % 1.0 < (0.5 + pw)) * 2) - 1;
+           balance = 0;
+        }
+
+        return f1 * balance + f2 * (1 - balance);
+    }
+
+    (function morph() {
+        const grapher = new Grapher("morph");
+        grapher.centered = true;
+
+        function draw(params) {
+            grapher.clear();
+            grapher.plot_function((t) => morph_func(4, +params.timber, +params.color, t), "green");
+            grapher.draw_frame();
+        }
+
+        form_driven_canvas("morph-form", draw);
     })();
 }
 
