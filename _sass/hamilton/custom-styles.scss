@@ -16,3 +16,26 @@
 .site-nav .current-page {
   text-decoration: underline overline;
 }
+
+.post-content {
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre, ul, ol, dl, figure, .highlight  {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
+}
+
+.post-content {
+    code {
+        background-color: #1F1F1F;
+    }
+
+    .highlighter-rouge .highlight {
+        background: #1F1F1F;
+    }
+
+  font-size: 16px;
+}
+
+.site-body {
+  grid-template-columns: calc(1100px * 0.19) 1fr;
+}
