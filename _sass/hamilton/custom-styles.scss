@@ -39,3 +39,15 @@
 .site-body {
   grid-template-columns: calc(1100px * 0.19) 1fr;
 }
+
+@media screen and (max-width: 900px) {
+    .site-body {
+        grid-template-columns: calc(1100px * 0.06) 1fr;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .site-body {
+        grid-template-columns: 1fr;
+    }
+}

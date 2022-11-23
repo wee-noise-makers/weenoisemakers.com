@@ -104,8 +104,9 @@ A lookup table is a precomputed series of results for a periodic function of
 arbitrary complexity. This series is computed once during development of the
 software, and stored in an array in the firmware.
 
-<canvas id="lookup_table" width="750" height="200"></canvas>
-
+<div style="width:100%; text-align:center;">
+<canvas id="lookup_table" width="500" height="200"></canvas>
+</div>
 Using a lookup table, getting the result of a function just means reading a
 value in the corresponding array.
 
@@ -124,13 +125,15 @@ waveform lookup table.
 Since the signal is periodic, phase is a modulo counter. Once the phase reaches
 the end of the lookup table it starts back from the beginning.
 
-<canvas id="lookup_table_phase" width="750" height="200"></canvas>
-<form class="lookup_table_phase-controls" id="lookup_table_phase-form">
-  <div class="input-group">
-    <input type="range" id="phase" name="phase" min="0.0" max="2" value="0.2" step="0.001"/>
-    <label for="phase">Phase</label>
-  </div>
-</form>
+<div style="width:100%; text-align:center;">
+  <canvas id="lookup_table_phase" width="500" height="200"></canvas>
+  <form class="lookup_table_phase-controls" id="lookup_table_phase-form">
+    <div class="input-group">
+      <input type="range" id="phase" name="phase" min="0.0" max="2" value="0.2" step="0.001"/>
+      <label for="phase">Phase</label>
+    </div>
+  </form>
+</div>
 
 ## Phase increment
 
@@ -140,14 +143,16 @@ between each output sample point.
 The higher the phase increment, the faster the phase will step through the
 lookup table, the higher the output frequency.
 
-<canvas id="lookup_table_phase_incr" width="750" height="200"></canvas>
-<canvas id="lookup_output" width="750" height="200"></canvas>
-<form class="canvas-controls" id="lookup-phase-increment-form">
-  <div class="input-group">
-    <input type="range" id="phase-increment" name="phase_increment" min="0.1" max="10" value="2" step="0.01" />
-    <label for="phase-increment">Phase Increment</label>
-  </div>
-</form>
+<div style="width:100%; text-align:center;">
+  <canvas id="lookup_table_phase_incr" width="500" height="200"></canvas>
+  <canvas id="lookup_output" width="500" height="200"></canvas>
+  <form class="canvas-controls" id="lookup-phase-increment-form">
+    <div class="input-group">
+      <input type="range" id="phase-increment" name="phase_increment" min="0.1" max="10" value="2" step="0.01" />
+      <label for="phase-increment">Phase Increment</label>
+    </div>
+  </form>
+</div>
 
 In Braids, there is a function that provides the phase increment for a given
 note/pitch you can find it
@@ -172,13 +177,15 @@ Given two points of a signal, find the value of another point in between.
 Braids uses simple linear Interpolation for that, it's like drawing a straight
 line between two points of the lookup table.
 
-<canvas id="lookup_output_interp" width="750" height="200"></canvas>
-<form class="canvas-controls" id="lookup-output-interp-form">
-  <div class="input-group">
-    <input type="range" id="phase-increment" name="phase_increment" min="0.1" max="10" value="2" step="0.01" />
-    <label for="phase-increment">Phase Increment</label>
-  </div>
-</form>
+<div style="width:100%; text-align:center;">
+  <canvas id="lookup_output_interp" width="500" height="200"></canvas>
+  <form class="canvas-controls" id="lookup-output-interp-form">
+    <div class="input-group">
+      <input type="range" id="phase-increment" name="phase_increment" min="0.1" max="10" value="2" step="0.01" />
+      <label for="phase-increment">Phase Increment</label>
+    </div>
+  </form>
+</div>
 
 For a given phase value, take lookup table values immediately above and below,
 let's call them `A` and `B`. The linear interpolation is `A` plus the
@@ -315,13 +322,15 @@ the square signal.
 The interactive graph below will give you an idea of what the morphing will
 look like on the output:
 
-<canvas id="morph" width="750" height="200"></canvas>
-<form class="morph-controls" id="morph-form">
-  <div class="input-group">
-    <input type="range" id="timber" name="timber" min="0" max="10" value="0.1" step="0.01" />
-    <label for="timber">Timber</label>
-  </div>
-</form>
+<div style="width:100%; text-align:center;">
+  <canvas id="morph" width="500" height="200"></canvas>
+  <form class="morph-controls" id="morph-form">
+    <div class="input-group">
+      <input type="range" id="timber" name="timber" min="0" max="10" value="0.1" step="0.01" />
+      <label for="timber">Timber</label>
+    </div>
+  </form>
+</div>
 
 The next step is rendering:
 ```c
