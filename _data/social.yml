@@ -1,18 +1,18 @@
 - title: Instagram
   url: https://www.instagram.com/weenoisemakers/
   icon: fab fa-instagram
-- title: Mastodon
-  url: https://mamot.fr/@DesChips
-  icon: fab fa-mastodon
-- title: YouTube
-  url: https://www.youtube.com/channel/UCgoJ3su6MfqVCd2sr4hLJOA
-  icon: fab fa-youtube
-- title: GitHub
-  url: https://github.com/wee-noise-makers
-  icon: fab fa-github
-- title: Tindie
-  url: https://www.tindie.com/stores/fabien-c/
-  icon: fas fa-shopping-bag
 - title: Twitter
   url: https://twitter.com/weenoisemaker
   icon: fab fa-twitter
+- title: GitHub
+  url: https://github.com/wee-noise-makers
+  icon: fab fa-github
+- title: YouTube
+  url: https://www.youtube.com/channel/UCgoJ3su6MfqVCd2sr4hLJOA
+  icon: fab fa-youtube
+- title: Mastodon
+  url: https://mamot.fr/@DesChips
+  icon: fab fa-mastodon
+- title: Tindie
+  url: https://www.tindie.com/stores/fabien-c/
+  icon: fas fa-shopping-bag

@@ -1,2 +1,6 @@
+- title: PGB-1
+  url: /pgb-1
 - title: Blog
-  url: /blog/
+  url: /blog
+- title: Contact
+  url: /contact

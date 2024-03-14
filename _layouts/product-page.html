@@ -1,0 +1,77 @@
+---
+layout: default
+---
+<style>
+  .product-background {
+  width: 100%;
+  height: auto;
+  }
+  
+  .product-banner {
+  position: relative;
+  text-align: center;
+  z-index: -1;
+  }
+
+  .launching-soon {
+  position: absolute;
+  width:20%;
+  height:auto;
+
+  top: 15%;
+  right: 3%;
+
+  z-index: 0;
+
+
+  transform: rotate(25deg);
+  filter: drop-shadow(1px 1px 3px #555555);
+
+  }
+
+  .product-banner-text {
+  position: absolute;
+  top: 25%;
+  left: 2%;
+  text-align: left;
+  }
+
+  .product-name {
+  font-family: zeroesone;
+  font-size: 300%;
+  text-shadow: 2px 2px 4px black;
+  }
+
+  .product-tagline {
+  font-size: 130%;
+  text-shadow: 2px 2px 4px black;
+  }
+
+  .product-description {
+  width: 100%;
+  height: auto;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  padding-left: 2em;
+  padding-right: 2em;
+  box-sizing: border-box;
+  text-align: justify;
+  }
+</style>
+
+<div class="product-banner">
+  <img class="product-background" src="{{ page.product-background}}">
+  <img class="launching-soon" src="/assets/launching_soon_red.svg">
+  <div class="product-banner-text">
+    <b class="product-name">{{ page.product-name }}</b>
+    <div class="product-tagline">{{ page.product-tagline }}</div>
+  </div>
+</div>
+
+{% if page.product-description %}
+<div class="product-description">
+  {{ page.product-description }}
+</div>
+{% endif %}
+
+{{ content }}

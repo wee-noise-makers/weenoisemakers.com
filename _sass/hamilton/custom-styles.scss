@@ -10,7 +10,16 @@
 
 // Set title font
 .site-title {
-    font-family: "zeroesone"
+    font-family: "zeroesone";
+    text-decoration: none;
+}
+
+.site-title:hover {
+    text-decoration: none;
+}
+
+.site-nav a:hover {
+    text-decoration: none;
 }
 
 .author-avatar {
@@ -41,12 +50,12 @@
 }
 
 .site-body {
-  grid-template-columns: calc(1100px * 0.19) 1fr;
+  grid-template-columns: calc(600px * 0.19) 1fr;
 }
 
 @media screen and (max-width: 900px) {
     .site-body {
-        grid-template-columns: calc(1100px * 0.06) 1fr;
+        grid-template-columns: calc(600px * 0.06) 1fr;
     }
 }
 
