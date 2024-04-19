@@ -4,7 +4,6 @@ title: PGB-1 pre-launch on CrowdSupply!
 category: blog
 tags:
 - pgb-1
-- pre-launch
 - crowdsupply
 - crowdfunding
 ---
