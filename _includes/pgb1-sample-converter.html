@@ -1,7 +1,8 @@
 <script>
+const audio_sample_rate = 32000;
 const sector_size = 4096;
-const sectors_per_sample = 44;
-const number_of_samples = 32;
+const sectors_per_sample = 32;
+const number_of_samples = 64;
 const sample_byte_size = sector_size * sectors_per_sample;
 const sample_name_len = 14;
 const sample_metadata_byte_size = sample_name_len + 4;
@@ -9,8 +10,8 @@ const sample_audio_byte_size = sample_byte_size - sample_metadata_byte_size;
 const sample_point_count = sample_audio_byte_size / 2;
 
 const flash_base = 0x10000000;
-const code_sectors = 1204;
-const FS_sectors = 1484;
+const code_sectors = 256;
+const FS_sectors = 1792;
 const sample_library_offset = (code_sectors + FS_sectors) * sector_size;
 const sample_library_base = flash_base + sample_library_offset;
 
@@ -49,7 +50,7 @@ function enableButtons(enable=true) {
 }
 
 function loadSound(buffer, filename) {
-    var ac = new OfflineAudioContext(1, 44100, 44100);
+    var ac = new OfflineAudioContext(1, audio_sample_rate, audio_sample_rate);
     ac.decodeAudioData(buffer, function (buffer) {
         // success callback, buffer is a https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
         audioBuffer = buffer;
@@ -208,7 +209,7 @@ function Convert(){
     sample_buffer[sample_buffer.length - 2] = (pcmInt16.length >> 8) & 0xFF;
     sample_buffer[sample_buffer.length - 1] = (pcmInt16.length >> 0) & 0xFF;
 
-    // Make UF2 blocks and contatenate them into a single file
+    // Make UF2 blocks and concatenate them into a single file
     const sample_id = document.getElementById('sample_id').value - 1;
     const blockSize = 256;
     const numberOfBlocks = sample_byte_size / blockSize;
@@ -413,7 +414,7 @@ div.sample-converter-container {
                disabled><br>
         <label>Sample Slot:</label>
         <input type="number" id="sample_id" 
-               min="1" max="32" step="1" value="1"
+               min="1" max="64" step="1" value="1"
                disabled><br>
         <button type="button" id="sample_convert" onclick="Convert()" disabled>Export</button><br>
     </form>
