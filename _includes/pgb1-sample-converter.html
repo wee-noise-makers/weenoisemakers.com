@@ -198,9 +198,11 @@ function Convert(){
     console.log(name);
     console.log(name.length);
     for (var i = 0; i < sample_name_len; i++) {
-        const char = name[i];
-        const code = char.charCodeAt();
-        sample_buffer[name_offset + i] = i < name.length ? code : ' '.charCodeAt();
+        var char = ' ';
+        if (i < name.length) {
+            char = name[i];
+        }
+        sample_buffer[name_offset + i] = char.charCodeAt();
     }
 
     // Write sample length
@@ -336,7 +338,18 @@ function drawSample() {
     }
 }
 
-div.sample-converter-container > * , input, input::file-selector-button, button, label {
+div.sample-converter-container * {
+    background-color: transparent;
+    color: var(--primary-color);
+    font-family: 'zeroesone', sans-serif;
+    font-weight: 300;
+    scrollbar-color: var(--primary-color) var(--secondary-color);
+    border-color: var(--primary-color);
+    font-size: clamp(18px, 3vw, 30px);
+    text-shadow: 0 0 0.3rem;
+}
+
+div.sample-converter-container input::file-selector-button {
     background-color: transparent;
     color: var(--primary-color);
     font-family: 'zeroesone', sans-serif;
@@ -399,7 +412,7 @@ div.sample-converter-container {
     <li>PGB-1 will reset with the new sample installed</li>
   </ol>
 <div class="sample-converter-container">
-    <input id="file1" type="file" accept="audio/*" value="" onchange="loadSample()"/><br>
+<input id="file1" type="file" accept="audio/*" value="" onchange="loadSample()"/><br>
     <canvas id='sample_visual'></canvas><br>
     <div style="display: flex;">
         <button type="button" id="sample_play" onclick="play()" width="50%" disabled>▶</button>
