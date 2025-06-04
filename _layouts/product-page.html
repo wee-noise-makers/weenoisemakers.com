@@ -2,18 +2,34 @@
 layout: default
 ---
 <style>
-  .product-background {
+.product-background {
   width: 100%;
-  height: auto;
-  }
-  
-  .product-banner {
+  height: 25em;
+
+  background: radial-gradient(
+    circle at center in hsl shorter hue,
+    #a89a87,
+    #867865
+  );
+
+}
+
+.product-image{
+  height: 80%;
+  width: auto;
+  position: absolute;
+  left: 50%;
+  bottom: 0%;
+  transform: translate(-50%, 0%);
+}
+
+.product-banner {
   position: relative;
   text-align: center;
   z-index: -1;
-  }
+}
 
-  .launching-soon {
+.launching-soon {
   position: absolute;
   width:20%;
   height:auto;
@@ -27,27 +43,27 @@ layout: default
   transform: rotate(25deg);
   filter: drop-shadow(1px 1px 3px #555555);
 
-  }
+}
 
-  .product-banner-text {
+.product-banner-text {
   position: absolute;
-  top: 25%;
+  top: 0%;
   left: 2%;
   text-align: left;
-  }
+}
 
-  .product-name {
+.product-name {
   font-family: zeroesone;
   font-size: 300%;
   text-shadow: 2px 2px 4px black;
-  }
+}
 
-  .product-tagline {
+.product-tagline {
   font-size: 130%;
   text-shadow: 2px 2px 4px black;
-  }
+}
 
-  .product-description {
+.product-description {
   width: 100%;
   height: auto;
   padding-top: 1.5em;
@@ -56,11 +72,13 @@ layout: default
   padding-right: 2em;
   box-sizing: border-box;
   text-align: justify;
-  }
+}
 </style>
 
 <div class="product-banner">
-  <img class="product-background" src="{{ page.product-background}}">
+  <div class="product-background">
+    <img class="product-image" src="{{ page.product-background}}">
+  </div>
   <!-- <img class="launching-soon" src="/assets/launching_soon_red.svg"> -->
   <div class="product-banner-text">
     <b class="product-name">{{ page.product-name }}</b>

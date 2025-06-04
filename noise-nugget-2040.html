@@ -1,0 +1,126 @@
+---
+layout: product-page
+permalink: /noise-nugget-2040/
+product-name: 'Noise Nugget 2040'
+product-tagline: 'From ideas to production. Noise Nugget brings your synths to life.'
+product-background: '/assets/noise-nugget-2040/nn-2040-product-image.png'
+product-description: |
+  Noise Nugget 2040 handles all the complexity of digital HD audio synthesis
+  in a very compact, production friendly, and affordable package.
+  Allowing you to focus on what makes your ideas unique. 
+---
+  
+Start prototyping now with our Noise Nugget development tools:
+<a href="#devkit">Devkit</a>, <a href="#breakout">Breakout</a>.
+
+<style>
+  .grid-container {
+  display:grid;
+  grid-template-columns: 1fr;
+  }
+
+  @media only screen and (min-width: 60em) {
+    .grid-container {
+     
+    grid-template-columns: 1fr 1fr;
+    }
+  } 
+  .grid-child {
+  padding:1.5em;
+  box-sizing: border-box;
+  }
+</style>
+
+<div class="grid-container">
+  <div class="grid-child">
+    <ul>
+      <li>Powerful CPU:
+      <ul>
+        <li>Raspberry-Pi RP2040</li>
+        <li>Dual-core Arm Cortex-M0+ at 200MHz</li>
+        <li>16MB of flash memory</li>
+        <li>264KB of RAM</li>
+        <li>24 GPIO pins (+2 reserved for I2C)</li>
+        <li>Up to 10 MIDI in and out</li>
+      </ul></li>
+      <li>Stereo Speaker Amplifier:
+      <ul>
+        <li>2.1W per channel into 4&#8486; at 5V</li>
+        <li>1.7W per channel into 8&#8486; at 5V</li>
+        <li>Gain of 6, 12, 18, or 24 dB</li>
+      </ul></li>
+    <ul>
+  </div>  
+  <div class="grid-child">
+    <ul>
+      <li>HD Audio Interface:
+      <ul>
+        <li>Up to 24-bit at 96kHz</li>
+        <li>Stereo headphone output</li>
+        <li>Stereo line output</li>
+        <li>3 x stereo inputs (line level or microphone)</li>
+      </ul></li>
+      <li>Open-source frameworks for:
+      <ul>
+        <li>C/C++</li>
+        <li>CircuitPython</li>
+        <li>Ada</li>
+      </ul></li>
+      <li>Digital audio synthesis libraries:
+      <ul>
+        <li>Easy to use building blocks</li>
+        <li>Fast fixed-point DSP</li>
+        <li>MIDI and MIDI over USB</li>
+      </ul></li>
+  </div>
+</div>
+
+A simple USB powered MIDI synthesizer can be implemented with just 8
+components on a 2 sided PCB:
+<ul>
+  <li>1 M.2 Socket for the Noise Nugget</li>
+  <li>1 USB receptacle</li>
+  <li>1 Output jack</li>
+  <li>MIDI input:
+  <ul>
+    <li>1 jack</li>
+    <li>2 resistors</li>
+    <li>1 optocoupler</li>
+    <li>1 diode</li>
+  </ul>
+</ul>
+
+<hr>
+ 
+<a id="devkit"><h2>DevKit</h2></a>
+
+The Noise Nugget 2040 DevKit is the most complete development board for the
+Noise Nugget. It features:
+<ul>
+  <li>USB type C</li>
+  <li>MIDI inpout and output ports (TRS-A)</li>
+  <li>Headset jack</li>
+  <li>3 x line-in jacks</li>
+  <li>Onboard microphone</li>
+  <li>2 x speaker terminal blocks</li>
+  <li>Debug port</li>
+  <li>pin headers for all the Noise Nugget IOs</li>
+</ul>
+
+<a href="https://github.com/wee-noise-makers/noise-nugget-2040/tree/main/devkit">Documentation and examples...</a>
+
+<img style="background-color: white" src="/assets/noise-nugget-2040/wnm-nn2040-devkit-pinout.png">
+
+<hr>
+  
+<a id="breakout"><h2>Breakout</h2></a>
+
+<div>
+  The Noise Nugget 2040 Breakout is a small, breadboard compatible, development
+board. It features a USB type C port, 2 buttons for reset and boot, 3 pins
+debug port, and pin headers for all the Noise Nugget IOs.
+</div>
+
+<a href="https://github.com/wee-noise-makers/noise-nugget-2040/tree/main/breakout">Documentation and examples...</a>
+
+<img style="background-color: white" src="/assets/noise-nugget-2040/wnm-nn2040-breakout-pinout.png">
