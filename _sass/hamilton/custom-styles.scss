@@ -6,6 +6,7 @@
 
 .site-main {
     scrollbar-width: auto;
+    margin-top: 2rem;
 }
 
 // Set title font
@@ -63,4 +64,26 @@
     .site-body {
         grid-template-columns: 1fr;
     }
+}
+
+.go-to-shop-product {
+  border-radius: 0.25rem;
+  background-color: #00b1c9;
+  color: #000000;
+  padding: 0.25rem 0.25rem;
+  padding-right: 0.4rem;
+  font-size: 1.2rem;
+
+  // height: 2rem;
+  // width: 5rem;
+  // display:block;
+  // text-align:center;
+}
+
+.go-to-shop-product:hover {
+  filter: brightness(0.9);
+  color: #000000;
+}
+.go-to-shop-product:visited {
+  color: #000000;
 }

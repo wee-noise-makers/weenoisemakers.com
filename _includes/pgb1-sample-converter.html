@@ -400,6 +400,9 @@ div.sample-converter-container {
     width: 100%;
     height: 20vh;
 }
+#file1 {
+    width: 90%;
+}
 </style>
 <hr>
   <h2 id="sample-converter">Sample Converter</h2>
@@ -412,7 +415,7 @@ div.sample-converter-container {
     <li>PGB-1 will reset with the new sample installed</li>
   </ol>
 <div class="sample-converter-container">
-<input id="file1" type="file" accept="audio/*" value="" onchange="loadSample()"/><br>
+    <input id="file1" type="file" accept="audio/*" value="" onchange="loadSample()"/><br>
     <canvas id='sample_visual'></canvas><br>
     <div style="display: flex;">
         <button type="button" id="sample_play" onclick="play()" width="50%" disabled>▶</button>

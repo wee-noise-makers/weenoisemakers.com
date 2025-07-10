@@ -1,0 +1,9 @@
+---
+layout: default
+---
+<div style="width:80vw">
+<paypal-add-to-cart-button data-id="{{ page.paypal_id}}"></paypal-add-to-cart-button>
+<script>
+  cartPaypal.AddToCart({ id: "{{ page.paypal_id }}" })
+</script>
+</div>
