@@ -1,10 +1,10 @@
 - title: PGB-1
-  url: /pgb-1
+  url: /
 - title: Noise-Nugget
   url: /noise-nugget-2040
 - title: Blog
   url: /blog
-- title: Shop
-  url: /shop
+# - title: Shop
+#   url: https://shop.weenoisemakers.com/
 - title: Contact
   url: /contact
