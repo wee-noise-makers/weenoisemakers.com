@@ -1,148 +1,31 @@
 ---
-layout: product-page
-# permalink: /pgb-1/
-product-name: 'PGB-1'
-product-tagline: 'The ultimate pocket synth.'
-product-background: '/assets/pgb-1/wnm-pgb-1-product-image.png'
-product-description: |
-  The PGB-1 is the ultimate tool for anyone who loves making music on the go.
-  Whether you're just starting out or a seasoned musician, this all-in-one
-  device gives you everything you need to create complex tracks anywhere. With
-  its advanced sequencing, drums, synthesizers and samplers tracks, it lets you
-  take your music wherever inspiration strikes.
+layout: default
+products: ['/pgb-1/', '/noise-nugget-2040/']
 ---
 <style>
-  .hs-container {
-  width: 100%;
-  background-color: white;
-  padding-top: 1.5em;
-  }
-
-  .hs-form {
-  margin: auto;
-  width: 70%;
-  }
-
-  .retailers {
-  width: 100%;
+  .grey-box {
   height: auto;
-  padding-top:1.5em;
-  padding-left:1.5em;
+  padding: 1em;
+  margin: 2rem;
   box-sizing: border-box;
-  border: 1px solid white
-  }
-
-  .retailers-logo {
-  width: 1rem;
-  height: 1rem;
-  }
-
-</style>
-
-<div class="retailers">
-Retailers
-  <ul>
-    <!-- <li>EU 🇪🇺: <a href="https://shop.weenoisemakers.com/">Direct from us</a> -->
-    <!-- </li> -->
-    <li>US 🇺🇸:<ul>
-      <li>
-        <a href="https://www.crowdsupply.com/wee-noise-makers/wee-noise-makers-pgb-1">
-        <img class="retailers-logo" src="/assets/retrailers/crowdsupply.ico"> CrowdSupply</a>
-      </li>
-      <li>
-        <a class="retailers-logo" href="https://www.perfectcircuit.com/wee-noise-makers">
-        <img src="/assets/retrailers/perfect_circuit.webp"> Perfect Circuit</a>
-      </li>
-   </ul></li>
-  </ul>
-</div>
-
-<div style="text-align:center; padding-top:3em">
-<iframe width="50%" style="aspect-ratio: 1/1;"
-src="https://www.youtube.com/embed/m38_rFy7wd8"
-title="YouTube video player"
-frameborder="0"
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-allowfullscreen></iframe>
-</div>
-
-<div style="text-align:center; padding-top:3em">
-  <iframe width="80%" style="aspect-ratio: 16/9;" src="https://www.youtube.com/embed/eX6qXDNQkh8?si=uyx0RzgePS7eChlL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
-
-<div style="text-align:center; padding-top:3em">
-  <iframe width="80%" style="aspect-ratio: 16/9;" src="https://www.youtube.com/embed/aG0A5TpnFIk?si=KRv_aqULJ-NpYEnC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
-
-
-<style>
-  .grid-container {
-  display:grid;
-  grid-template-columns: 1fr;
-  }
-
-  @media only screen and (min-width: 60em) {
-    .grid-container {
-
-    grid-template-columns: 1fr 1fr;
-    }
-  }
-  .grid-child {
-  box-sizing: border-box;
+  background-color: #3f3f3f;
   }
 </style>
-
-<div class="grid-container">
-  <div class="grid-child">
-    <ul>
-      <li>Powerful Sound Engine:
-      <ul>
-        <li>6 Synthesis channels</li>
-        <li>2 Sampler channels</li>
-        <li>8 LFOs (one per channel)</li>
-        <li>4 Master effects</li>
-        <li>Onboard sampling (From line-in or microphone)</li>
-      </ul></li>
-      <li>Advanced Sequencing:
-      <ul>
-        <li>16 Tracks (internal or MIDI)</li>
-        <li>16 Patterns of 16 steps for each track</li>
-        <li>Song mode</li>
-        <li>Chord sequencer</li>
-        <li>16 Arpeggiators (one per track)</li>
-        <li>Live sequencer effects</li>
-      </ul></li>
-      <li>Firmware:
-      <ul>
-        <li>Open-source stock firmware</li>
-        <li>Multi-language: CircuitPython, Ada, C/C++</li>
-      </ul></li>
-    <ul>
+  
+{% for product in page.products %}
+{% assign subpage = site.pages | where: 'url', product %}
+<a href="{{ subpage[0].url }}" style="text-decoration:none;" >
+  <div class="grey-box" style="height:15rem; ">
+    <div style="display: table-row">
+      <div style="vertical-align: middle; font-family: zeroesone; width: 60%; display: table-cell; text-align: center;">
+        <h2>{{ subpage[0].product-name }}</h2>
+        {{ subpage[0].product-tagline }}
+      </div>
+      <div style="display: table-cell;">
+        <img src="{{ subpage[0].product-background }}">
+      </div>
+    </div>
   </div>
-  <div class="grid-child">
-    <ul>
-      <li>User Interface:
-      <ul>
-        <li>128x64 OLED screen</li>
-        <li>25 RGB LEDs</li>
-        <li>30 Tactile switches</li>
-        <li>Touch strip</li>
-      </ul></li>
-      <li>Inputs & Outputs:
-      <ul>
-        <li>USB Type-C (Power & Data)</li>
-        <li>3.5mm Headphone/Headset</li>
-        <li>3.5mm Audio Line-in</li>
-        <li>3.5mm MIDI Input & Output (type-A)</li>
-        <li>Internal microphone</li>
-      </ul></li>
-      <li>Hardware:
-      <ul>
-        <li>RP2040+: Dual-core ARM Cortex-M processor</li>
-        <li>Audio Interface</li>
-        <li>Li-ion battery</li>
-      </ul></li>
-  </div>
-</div>
+</a>
 
-{% include pgb1-sample-converter.html %}
+{% endfor %}
