@@ -12,7 +12,7 @@ both [aluminum and plastic
 versions](https://www.perfectcircuit.com/wee-noise-makers).
 
 {:refdef: style="text-align: center; background: white; padding-top: 1rem; padding-bottom: 1rem;"}
-[![Perfect Circuit logo](/assets/retrailers/perfect-circuit-logo-web.svg)](https://www.perfectcircuit.com/wee-noise-makers)
+[![Perfect Circuit logo](/assets/retailers/perfect-circuit-logo-web.svg)](https://www.perfectcircuit.com/wee-noise-makers)
 [![](/assets/pgb-1/perfect_circuit_WeeNoiseMakers_PGB-1_Metal.webp)](https://www.perfectcircuit.com/wee-noise-makers)
 {: refdef}
 
