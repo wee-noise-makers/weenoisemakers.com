@@ -19,10 +19,10 @@ including our own online shop that we are opening today for EU customers.
 Here is the list of retailers as of today:
 
  - EU 🇪🇺:
-   - [Direct from us](https://shop.weenoisemakers.com/")
+   - [Direct from us](https://shop.weenoisemakers.com/)
  - US 🇺🇸:
-   - [CrowdSupply]("https://www.crowdsupply.com/wee-noise-makers/wee-noise-makers-pgb-1)
-   - [Perfect Circuit](https://www.perfectcircuit.com/wee-noise-makers")
+   - [CrowdSupply](https://www.crowdsupply.com/wee-noise-makers/wee-noise-makers-pgb-1)
+   - [Perfect Circuit](https://www.perfectcircuit.com/wee-noise-makers)
  - UK 🇬🇧:
    - [Juno](https://www.juno.co.uk/products/wee-noise-makers-pgb-1-portable-groovebox-black/1025150-01/)
 
