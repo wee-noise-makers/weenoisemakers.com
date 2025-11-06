@@ -1,0 +1,45 @@
+---
+layout: default
+---
+
+<style>
+.text-block {
+  position: absolute;
+  bottom: 0;
+  left: 75%;
+  color: black;
+  }
+</style>
+
+{% for setups_cat in site.data.amvs-1-setups %}
+{% for setup in setups_cat[1] %}
+<div id="code-{{setup["code"]}}">
+{% if {{setup["instrument-count"]}} == 1 %}
+
+Setup for {{setup["instrument-count"]}} instrument (<code>{{setup["code"]}}</code>):
+{% else %}
+Setup for {{setup["instrument-count"]}} instruments (<code>{{setup["code"]}}</code>):
+{% endif %}
+</div>
+<div style="position: relative; background-color:white; aspect-ratio: 16 / 9;">
+ <img src="/assets/amvs-1/setups/{{setup.screenshots.combined}}">
+   <div class="text-block">
+     Parts list:
+     <ul>
+       {% if setup.parts-list["A"] != 0 %}
+       <li> A stands: {{setup.parts-list["A"]}}</li>
+       {% endif %}
+       {% if setup.parts-list["B"] != 0 %}
+       <li> B stands: {{setup.parts-list["B"]}}</li>
+       {% endif %}
+       {% if setup.parts-list["S"] != 0 %}
+       <li> Squares: {{setup.parts-list["S"]}}</li>
+       {% endif %}
+       {% if setup.parts-list["C"] != 0 %}
+       <li> Connectors: {{setup.parts-list["C"]}}</li>
+       {% endif %}
+     </ul></div>
+</div>
+<br>
+{% endfor %}
+{% endfor %}

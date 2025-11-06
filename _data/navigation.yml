@@ -1,5 +1,7 @@
 - title: PGB-1
   url: /pgb-1
+- title: AMVS
+  url: /amvs
 - title: Noise-Nugget
   url: /noise-nugget-2040
 - title: Blog
@@ -9,4 +11,4 @@
 - title: Contact
   url: /contact
 - title: PCBWay
-  url: https://www.pcbway.com/
+  url: https://www.pcbway.com/?from=weenoisemakers

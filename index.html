@@ -1,6 +1,6 @@
 ---
 layout: default
-products: ['/pgb-1/', '/noise-nugget-2040/']
+products: ['/pgb-1/', '/amvs/', '/noise-nugget-2040/']
 ---
 <style>
   .grey-box {
@@ -9,22 +9,26 @@ products: ['/pgb-1/', '/noise-nugget-2040/']
   margin: 2rem;
   box-sizing: border-box;
   background-color: #3f3f3f;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  }
+  .grey-box > div {
+    align-self: center;
+    justify-self: center;
   }
 </style>
   
 {% for product in page.products %}
 {% assign subpage = site.pages | where: 'url', product %}
 <a href="{{ subpage[0].url }}" style="text-decoration:none;" >
-  <div class="grey-box" style="height:15rem; ">
-    <div style="display: table-row">
-      <div style="vertical-align: middle; font-family: zeroesone; width: 60%; display: table-cell; text-align: center;">
-        <h2>{{ subpage[0].product-name }}</h2>
-        {{ subpage[0].product-tagline }}
-      </div>
-      <div style="display: table-cell;">
-        <img src="{{ subpage[0].product-background }}">
-      </div>
-    </div>
+  <div class="grey-box" style="height:12rem; ">
+   <div style="vertical-align: middle; font-family: zeroesone; width: 60%;text-align: center;">
+     <h2>{{ subpage[0].product-name }}</h2>
+     {{ subpage[0].product-tagline }}
+   </div>
+   <div>
+     <img style="max-height:9rem;" src="{{ subpage[0].product-background }}">
+   </div>
   </div>
 </a>
 

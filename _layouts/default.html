@@ -20,6 +20,28 @@
         </main>
       </div>
     </div>
+
+<style>
+.discord-button {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    color: white;
+    background-color: #5865f2;
+    padding: 1rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 1rem;
+}
+</style>
+{% if page.discord %}
+<a class="discord-button" href="{{page.discord}}">
+<i class='fab fa-discord'></i> Join the {{ page.product-name}} Discord channel</a>
+{% else %}
+<a class="discord-button" href="https://discord.gg/jsPZuS2n7c">
+<i class='fab fa-discord'></i> Join us on Discord</a>
+{% endif %}
+
   </body>
 
 </html>
