@@ -20,6 +20,9 @@ product-description: |
   border: none;
   cursor: pointer;
 }
+.cults-download:visited {
+  color: white;
+}
 </style>
 <div style="display: flex; justify-content: center;">
 <a class="cults-download" href="https://cults3d.com/en/3d-model/gadget/modular-stand-system-for-the-korg-volca-series"><i class="fa fa-download"></i>
