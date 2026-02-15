@@ -1,0 +1,3006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGB-1 Sample Manager</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --surface2: #0f3460;
+  --accent: #4cae4f;
+  --accent2: #533483;
+  --red: #e94560;
+  --text: #eee;
+  --text-dim: #999;
+  --green: #4caf50;
+  --orange: #ff9800;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+header {
+  background: var(--surface);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+header h1 { font-size: 1.3rem; font-weight: 600; }
+header h1 span { color: var(--accent); }
+#status {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+#status.connected .dot { background: var(--green); }
+.toolbar {
+  background: var(--surface);
+  padding: 10px 24px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ffffff10;
+}
+button {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid #ffffff20;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+button:hover { background: var(--accent2); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.primary { background: var(--red); border-color: var(--red); }
+button.primary:hover { background: #c73a52; }
+#sample-list {
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+.sample-card {
+  background: var(--surface);
+  border: 1px solid #ffffff10;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+.sample-card:hover { border-color: var(--accent); }
+.sample-card .sample-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sample-card .sample-id {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.sample-card .sample-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sample-card .sample-info {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.sample-card .sample-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.sample-card .sample-actions button {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+.sample-card .waveform-container {
+  height: 48px;
+  background: #0005;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.sample-card canvas.waveform {
+  width: 100%;
+  height: 100%;
+}
+.progress-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  transition: width 0.1s;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--text-dim);
+}
+.empty-state p { margin-top: 8px; }
+#log {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  background: #000c;
+  backdrop-filter: blur(8px);
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 8px 24px;
+  font-family: 'Consolas', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  border-top: 1px solid #ffffff10;
+  display: none;
+}
+#log.visible { display: block; }
+#log div { padding: 1px 0; }
+#log .error { color: var(--accent); }
+#log .success { color: var(--green); }
+
+/* Upload modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000a;
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.visible { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+}
+.modal h2 { margin-bottom: 16px; font-size: 1.1rem; }
+.modal label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.modal input[type="text"],
+.modal input[type="number"],
+.modal select {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid #ffffff20;
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+.modal .form-row {
+  display: flex;
+  gap: 12px;
+}
+.modal .form-row > div { flex: 1; }
+.modal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.drop-zone {
+  border: 2px dashed #ffffff30;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+.drop-zone.dragover { border-color: var(--accent); }
+.drop-zone p { color: var(--text-dim); font-size: 0.85rem; }
+.drop-zone .file-name { color: var(--text); font-weight: 600; margin-top: 4px; }
+#upload-progress {
+  display: none;
+  margin-top: 12px;
+}
+#upload-progress .bar-bg {
+  background: var(--bg);
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+}
+#upload-progress .bar-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.2s;
+}
+#upload-progress .bar-text {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.recording-controls {
+  margin-bottom: 12px;
+}
+.recording-controls button {
+  margin-right: 6px;
+}
+.recording-indicator {
+  display: inline-block;
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Editor panel */
+.modal.has-editor { max-width: 700px; }
+#editor-panel {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ffffff20;
+}
+#editor-panel h3 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.editor-waveform-wrap {
+  position: relative;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+#editor-canvas {
+  width: 100%;
+  height: 120px;
+  display: block;
+  cursor: crosshair;
+  border-radius: 6px;
+}
+.editor-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.editor-row label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  min-width: 55px;
+}
+.editor-row input[type="range"] {
+  flex: 1;
+  min-width: 80px;
+  accent-color: var(--accent);
+}
+#filter-response-canvas {
+  width: 100%;
+  height: 120px;
+  background: var(--card-bg);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.editor-row select {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--text-dim);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+.editor-row .val {
+  font-size: 0.8rem;
+  color: var(--text);
+  min-width: 60px;
+  text-align: right;
+}
+.editor-section {
+  background: var(--bg);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.editor-section h4 {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.editor-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.editor-btns button {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+}
+.editor-toolbar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.editor-toolbar button {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+}
+.editor-info {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.editor-info .warn { color: var(--red); font-weight: 600; }
+.editor-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: 2px solid #ffffff15;
+}
+.editor-tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 7px 8px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-radius: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.editor-tabs button:hover { color: var(--text); background: none; }
+.editor-tabs button.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.editor-tab-content { display: none; }
+.editor-tab-content.active { display: block; }
+.editor-scrollbar {
+  height: 10px;
+  background: #ffffff10;
+  border-radius: 5px;
+  margin-top: 4px;
+  position: relative;
+  cursor: pointer;
+  display: none;
+}
+.editor-scrollbar.visible { display: block; }
+.editor-scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--text-dim);
+  border-radius: 5px;
+  min-width: 16px;
+  cursor: grab;
+}
+.editor-scrollbar-thumb:hover { background: var(--text); }
+.editor-scrollbar-thumb:active { cursor: grabbing; background: var(--accent); }
+.editor-zoom {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.editor-zoom button {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  min-width: 28px;
+}
+.editor-playback {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.editor-playback button { font-size: 0.8rem; padding: 5px 12px; }
+.trim-inputs { display: flex; gap: 12px; margin-bottom: 8px; }
+.trim-inputs > div { flex: 1; }
+.trim-inputs label { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 2px; }
+.trim-inputs input[type="number"] {
+  width: 100%;
+  padding: 4px 8px;
+  background: var(--surface);
+  border: 1px solid #ffffff20;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 0.82rem;
+}
+.trim-inputs .time { font-size: 0.75rem; color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>PGB-1</span> Sample Manager</h1>
+  <div id="status"><div class="dot"></div><span>Disconnected</span></div>
+</header>
+
+<div class="toolbar">
+  <button id="btn-connect" class="primary">Connect USB</button>
+  <button id="btn-refresh" disabled>Refresh All</button>
+  <button id="btn-upload" disabled>Upload Sample</button>
+  <button id="btn-backup" disabled>Backup Library</button>
+  <button id="btn-log">Toggle Log</button>
+</div>
+
+<div id="sample-list">
+  <div class="empty-state">
+    <h2>No device connected</h2>
+    <p>Click "Connect USB" to connect to your PGB-1 in bootloader mode.</p>
+  </div>
+</div>
+
+<div id="log"></div>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="upload-modal">
+  <div class="modal">
+    <h2>Upload Sample</h2>
+
+    <div class="form-row">
+      <div>
+        <label for="upload-slot">Sample Slot (1-64)</label>
+        <input type="number" id="upload-slot" min="1" max="64" value="1">
+      </div>
+      <div>
+        <label for="upload-name">Sample Name (max 14 chars)</label>
+        <input type="text" id="upload-name" maxlength="14" placeholder="My Sample">
+      </div>
+    </div>
+
+    <label>Audio Source</label>
+    <div class="drop-zone" id="drop-zone">
+      <p>Drop an audio file here or click to browse</p>
+      <div class="file-name" id="file-name"></div>
+      <input type="file" id="file-input" accept="audio/*,.wav,.mp3,.ogg,.flac,.aif,.aiff" style="display:none">
+    </div>
+
+    <div class="recording-controls">
+      <button id="btn-record">Record from Mic</button>
+      <button id="btn-stop-record" disabled>Stop</button>
+      <span id="record-status"></span>
+    </div>
+
+    <!-- Audio Editor -->
+    <div id="editor-panel" style="display:none">
+      <h3>Edit Sample</h3>
+
+      <div class="editor-waveform-wrap">
+        <canvas id="editor-canvas"></canvas>
+        <div class="editor-scrollbar" id="editor-scrollbar">
+          <div class="editor-scrollbar-thumb" id="editor-scrollbar-thumb"></div>
+        </div>
+      </div>
+
+      <div class="editor-zoom">
+        <button id="btn-zoom-in" title="Zoom In">+</button>
+        <button id="btn-zoom-out" title="Zoom Out">&minus;</button>
+        <button id="btn-zoom-fit" title="Fit All">Fit</button>
+        <button id="btn-zoom-sel" title="Zoom to Selection">Selection</button>
+        <span class="editor-info" id="zoom-info"></span>
+      </div>
+
+      <div class="editor-playback">
+        <button id="btn-ed-play">Play</button>
+        <span class="editor-info" id="ed-play-time"></span>
+      </div>
+
+      <div class="editor-tabs" id="editor-tabs">
+        <button class="active" data-tab="tab-trim">Trim</button>
+        <button data-tab="tab-gain">Gain</button>
+        <button data-tab="tab-transform">Transform</button>
+        <button data-tab="tab-speed">Speed</button>
+        <button data-tab="tab-filter">Filter</button>
+        <button data-tab="tab-crush">Bit Crush</button>
+        <button data-tab="tab-reverb">Reverb</button>
+        <button data-tab="tab-delay">Delay</button>
+        <button data-tab="tab-compress">Compress</button>
+      </div>
+
+      <div class="editor-section">
+        <!-- Trim -->
+        <div class="editor-tab-content active" id="tab-trim">
+          <div class="trim-inputs">
+            <div>
+              <label>Start</label>
+              <input type="number" id="trim-start" min="0" value="0">
+              <span class="time" id="trim-start-time">0.000s</span>
+            </div>
+            <div>
+              <label>End</label>
+              <input type="number" id="trim-end" min="0" value="0">
+              <span class="time" id="trim-end-time">0.000s</span>
+            </div>
+          </div>
+          <hr style="border-color:#ffffff10;margin:10px 0">
+          <div class="editor-row">
+            <label>Auto Trim Threshold</label>
+            <input type="range" id="ed-autotrim-thresh" min="-60" max="-12" value="-40">
+            <span class="val" id="ed-autotrim-val">-40 dB</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-autotrim">Auto Trim</button>
+          </div>
+        </div>
+
+        <!-- Gain -->
+        <div class="editor-tab-content" id="tab-gain">
+          <div class="editor-row">
+            <input type="range" id="ed-gain" min="0" max="300" value="100">
+            <span class="val" id="ed-gain-val">1.00x (0dB)</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-gain">Apply Gain</button>
+            <button id="btn-ed-normalize">Normalize</button>
+          </div>
+        </div>
+
+        <!-- Transform -->
+        <div class="editor-tab-content" id="tab-transform">
+          <div class="editor-btns">
+            <button id="btn-ed-reverse">Reverse</button>
+            <button id="btn-ed-fade-in">Fade In</button>
+            <button id="btn-ed-fade-out">Fade Out</button>
+          </div>
+          <div class="editor-row" style="margin-top:8px">
+            <label>Fade ms</label>
+            <input type="range" id="ed-fade-ms" min="1" max="500" value="50">
+            <span class="val" id="ed-fade-val">50ms</span>
+          </div>
+        </div>
+
+        <!-- Speed -->
+        <div class="editor-tab-content" id="tab-speed">
+          <div class="editor-row">
+            <input type="range" id="ed-speed" min="25" max="400" value="100">
+            <span class="val" id="ed-speed-val">1.00x</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-speed">Apply Speed</button>
+          </div>
+          <div class="editor-info warn" id="ed-speed-warn" style="display:none"></div>
+        </div>
+
+        <!-- Filter -->
+        <div class="editor-tab-content" id="tab-filter">
+          <canvas id="filter-response-canvas" width="600" height="120"></canvas>
+          <div class="editor-row">
+            <label>Mode</label>
+            <select id="ed-filter-mode">
+              <option value="lowpass">Low Pass</option>
+              <option value="bandpass">Band Pass</option>
+              <option value="highpass">High Pass</option>
+            </select>
+          </div>
+          <div class="editor-row">
+            <label>Cutoff</label>
+            <input type="range" id="ed-filter-cutoff" min="20" max="16000" value="1000">
+            <span class="val" id="ed-filter-cutoff-val">1000 Hz</span>
+          </div>
+          <div class="editor-row">
+            <label>Resonance</label>
+            <input type="range" id="ed-filter-q" min="1" max="300" value="10">
+            <span class="val" id="ed-filter-q-val">1.0</span>
+          </div>
+          <div class="editor-row">
+            <label>Overdrive</label>
+            <input type="range" id="ed-filter-drive" min="0" max="300" value="0">
+            <span class="val" id="ed-filter-drive-val">Off</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-filter">Apply Filter</button>
+          </div>
+        </div>
+
+        <!-- Bit Crush -->
+        <div class="editor-tab-content" id="tab-crush">
+          <div class="editor-row">
+            <input type="range" id="ed-bits" min="2" max="16" value="16">
+            <span class="val" id="ed-bits-val">16-bit</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-crush">Apply Bit Crush</button>
+          </div>
+        </div>
+
+        <!-- Reverb -->
+        <div class="editor-tab-content" id="tab-reverb">
+          <div class="editor-row">
+            <label>Room Size</label>
+            <input type="range" id="ed-reverb-decay" min="1" max="30" value="10">
+            <span class="val" id="ed-reverb-decay-val">1.0s</span>
+          </div>
+          <div class="editor-row">
+            <label>Mix</label>
+            <input type="range" id="ed-reverb-mix" min="0" max="100" value="50">
+            <span class="val" id="ed-reverb-mix-val">50%</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-reverb">Apply Reverb</button>
+          </div>
+        </div>
+
+        <!-- Delay -->
+        <div class="editor-tab-content" id="tab-delay">
+          <div class="editor-row">
+            <label>Time</label>
+            <input type="range" id="ed-delay-time" min="10" max="1000" value="250">
+            <span class="val" id="ed-delay-time-val">250 ms</span>
+          </div>
+          <div class="editor-row">
+            <label>Feedback</label>
+            <input type="range" id="ed-delay-feedback" min="0" max="90" value="40">
+            <span class="val" id="ed-delay-feedback-val">40%</span>
+          </div>
+          <div class="editor-row">
+            <label>Mix</label>
+            <input type="range" id="ed-delay-mix" min="0" max="100" value="50">
+            <span class="val" id="ed-delay-mix-val">50%</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-delay">Apply Delay</button>
+          </div>
+        </div>
+
+        <!-- Compress -->
+        <div class="editor-tab-content" id="tab-compress">
+          <div class="editor-row">
+            <label>Threshold</label>
+            <input type="range" id="ed-comp-threshold" min="-60" max="0" value="-12">
+            <span class="val" id="ed-comp-threshold-val">-12 dB</span>
+          </div>
+          <div class="editor-row">
+            <label>Ratio</label>
+            <input type="range" id="ed-comp-ratio" min="1" max="20" value="4">
+            <span class="val" id="ed-comp-ratio-val">4:1</span>
+          </div>
+          <div class="editor-row">
+            <label>Attack</label>
+            <input type="range" id="ed-comp-attack" min="0" max="100" value="10">
+            <span class="val" id="ed-comp-attack-val">10 ms</span>
+          </div>
+          <div class="editor-row">
+            <label>Release</label>
+            <input type="range" id="ed-comp-release" min="10" max="500" value="100">
+            <span class="val" id="ed-comp-release-val">100 ms</span>
+          </div>
+          <div class="editor-row">
+            <label>Makeup Gain</label>
+            <input type="range" id="ed-comp-makeup" min="0" max="24" value="0">
+            <span class="val" id="ed-comp-makeup-val">0 dB</span>
+          </div>
+          <div class="editor-btns">
+            <button id="btn-ed-compress">Apply Compressor</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="editor-toolbar">
+        <button id="btn-ed-undo" disabled>Undo</button>
+        <button id="btn-ed-redo" disabled>Redo</button>
+        <button id="btn-ed-reset">Reset</button>
+      </div>
+
+      <div class="editor-info" id="ed-info"></div>
+    </div>
+
+    <div id="upload-progress">
+      <div class="bar-bg"><div class="bar-fill" id="upload-bar"></div></div>
+      <div class="bar-text" id="upload-text">Uploading...</div>
+    </div>
+
+    <div class="modal-actions">
+      <button id="btn-cancel-upload">Cancel</button>
+      <button id="btn-do-upload" class="primary" disabled>Upload</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// PGB-1 Sample Manager
+// ============================================================
+
+function webusb_not_available_alert() {
+  alert("Your browser does not support the required interface (WebUSB) for the Sample Manager. Please consider using one of the following browser: Opera, Edge, or Chome");
+}
+
+// First, check WebUSB support:
+try {
+  navigator.usb.addEventListener('disconnect', (e) => {});
+} catch (error) {
+  webusb_not_available_alert()
+}
+
+// --- Constants ---
+const VENDOR_ID = 0x2e8a;
+const PRODUCT_ID_RP2040 = 0x0003;
+const PRODUCT_ID_RP2350 = 0x000f;
+
+const PICOBOOT_MAGIC = 0x431fd10b;
+
+// Command IDs
+const PC_EXCLUSIVE_ACCESS = 0x01;
+const PC_REBOOT            = 0x02;
+const PC_FLASH_ERASE       = 0x03;
+const PC_READ              = 0x84; // bit 7 set = data IN
+const PC_WRITE             = 0x05;
+const PC_EXIT_XIP          = 0x06;
+const PC_ENTER_CMD_XIP     = 0x07;
+const PC_EXEC              = 0x08;
+const PC_VECTORIZE_FLASH   = 0x09;
+
+// Vendor-specific control requests
+const PICOBOOT_IF_RESET      = 0x41;
+const PICOBOOT_IF_CMD_STATUS = 0x42;
+
+// Sample format
+const SAMPLE_LIBRARY_BASE = 276824064;  // 0x10800000
+const SAMPLE_SIZE         = 131072;     // bytes per sample
+const AUDIO_DATA_SIZE     = 131054;     // 16-bit signed PCM
+const SAMPLE_NAME_SIZE    = 14;
+const SAMPLE_LENGTH_SIZE  = 4;          // uint32
+const MAX_SAMPLES         = 64;
+const SAMPLE_RATE         = 32000;
+
+// Picoboot command struct is 32 bytes
+const CMD_STRUCT_SIZE = 32;
+
+// --- State ---
+let device = null;
+let interfaceNum = 0;
+let outEp = 0;
+let inEp = 0;
+let token = 1;
+const sampleCache = new Map(); // id -> Uint8Array of PCM audio data
+let currentAudio = null;
+let usbBusy = false;
+
+async function usbLock(fn) {
+  if (usbBusy) {
+    log('USB busy, please wait...', 'error');
+    return null;
+  }
+  usbBusy = true;
+  try {
+    return await fn();
+  } finally {
+    usbBusy = false;
+  }
+}
+
+// --- Logging ---
+const logEl = document.getElementById('log');
+function log(msg, cls = '') {
+  const div = document.createElement('div');
+  div.className = cls;
+  div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// --- UI Elements ---
+const statusEl   = document.getElementById('status');
+const listEl     = document.getElementById('sample-list');
+const btnConnect = document.getElementById('btn-connect');
+const btnRefresh = document.getElementById('btn-refresh');
+const btnUpload  = document.getElementById('btn-upload');
+const btnBackup  = document.getElementById('btn-backup');
+const btnLog     = document.getElementById('btn-log');
+
+btnLog.addEventListener('click', () => logEl.classList.toggle('visible'));
+
+// --- Picoboot Protocol (WebUSB) ---
+
+function buildCmd(cmdId, params = {}) {
+  const buf = new ArrayBuffer(CMD_STRUCT_SIZE);
+  const view = new DataView(buf);
+
+  view.setUint32(0, PICOBOOT_MAGIC, true);         // dMagic
+  view.setUint32(4, token++, true);                 // dToken
+  view.setUint8(8, cmdId);                          // bCmdId
+  view.setUint8(9, params.cmdSize || 0);            // bCmdSize
+  // bytes 10-11: reserved / padding
+  view.setUint32(12, params.transferLength || 0, true); // dTransferLength
+
+  // Command-specific data starts at offset 16
+  if (params.addr !== undefined) {
+    view.setUint32(16, params.addr, true);
+  }
+  if (params.size !== undefined) {
+    view.setUint32(20, params.size, true);
+  }
+  if (params.exclusive !== undefined) {
+    view.setUint8(16, params.exclusive);
+  }
+
+  return new Uint8Array(buf);
+}
+
+async function recoverFromStall() {
+  log('Recovering from stall...');
+  try { await device.clearHalt('in', inEp); } catch (_) {}
+  try { await device.clearHalt('out', outEp); } catch (_) {}
+  await picobootReset();
+}
+
+async function sendCmd(cmdId, params = {}, dataOut = null) {
+  const cmd = buildCmd(cmdId, params);
+
+  // Send command packet via bulk OUT
+  let result = await device.transferOut(outEp, cmd);
+  if (result.status === 'stall') {
+    await recoverFromStall();
+    throw new Error(`Command send failed: stall (recovered)`);
+  }
+
+  let dataIn = null;
+  const transferLen = params.transferLength || 0;
+
+  if (transferLen > 0) {
+    if (cmdId & 0x80) {
+      // Data IN (read)
+      result = await device.transferIn(inEp, transferLen);
+      if (result.status === 'stall') {
+        await recoverFromStall();
+        throw new Error(`Data IN failed: stall (recovered)`);
+      }
+      dataIn = new Uint8Array(result.data.buffer, result.data.byteOffset, result.data.byteLength);
+    } else {
+      // Data OUT (write)
+      result = await device.transferOut(outEp, dataOut);
+      if (result.status === 'stall') {
+        await recoverFromStall();
+        throw new Error(`Data OUT failed: stall (recovered)`);
+      }
+    }
+  }
+
+  // ACK: opposite direction to data flow
+  if (cmdId & 0x80) {
+    // Send zero-length OUT
+    await device.transferOut(outEp, new Uint8Array(0));
+  } else {
+    // Receive zero-length IN
+    await device.transferIn(inEp, 64);
+  }
+
+  return dataIn;
+}
+
+async function picobootReset() {
+  // Clear any halted endpoints before reset (matches C implementation)
+  try { await device.clearHalt('in', inEp); } catch (_) {}
+  try { await device.clearHalt('out', outEp); } catch (_) {}
+
+  await device.controlTransferOut({
+    requestType: 'vendor',
+    recipient: 'interface',
+    request: PICOBOOT_IF_RESET,
+    value: 0,
+    index: interfaceNum,
+  });
+  log('Interface reset');
+}
+
+async function picobootExclusiveAccess(exclusive) {
+  await sendCmd(PC_EXCLUSIVE_ACCESS, {
+    cmdSize: 1,
+    exclusive: exclusive ? 1 : 0,
+  });
+  log(`Exclusive access: ${exclusive}`);
+}
+
+async function picobootExitXIP() {
+  await sendCmd(PC_EXIT_XIP, { cmdSize: 0 });
+  log('Exit XIP');
+}
+
+async function picobootEnterCmdXIP() {
+  await sendCmd(PC_ENTER_CMD_XIP, { cmdSize: 0 });
+  log('Enter CMD XIP');
+}
+
+const RP_PAGE_SIZE = 256;
+
+async function picobootRead(addr, len) {
+  // RP2040 bootrom requires 256-byte aligned address and size
+  const alignedAddr = addr & ~(RP_PAGE_SIZE - 1);
+  const alignedEnd = (addr + len + RP_PAGE_SIZE - 1) & ~(RP_PAGE_SIZE - 1);
+  const alignedLen = alignedEnd - alignedAddr;
+  const startOffset = addr - alignedAddr;
+
+  const chunks = [];
+  const CHUNK_SIZE = 0x10000; // 64KB chunks
+
+  for (let offset = 0; offset < alignedLen; offset += CHUNK_SIZE) {
+    const chunkLen = Math.min(CHUNK_SIZE, alignedLen - offset);
+    const data = await sendCmd(PC_READ, {
+      cmdSize: 8,
+      addr: alignedAddr + offset,
+      size: chunkLen,
+      transferLength: chunkLen,
+    });
+    chunks.push(data);
+  }
+
+  // Concatenate chunks
+  const aligned = new Uint8Array(alignedLen);
+  let pos = 0;
+  for (const chunk of chunks) {
+    aligned.set(chunk, pos);
+    pos += chunk.length;
+  }
+
+  // Return only the requested range
+  return aligned.slice(startOffset, startOffset + len);
+}
+
+async function picobootWrite(addr, data) {
+  const CHUNK_SIZE = 0x1000; // 4KB chunks (flash page aligned)
+
+  for (let offset = 0; offset < data.length; offset += CHUNK_SIZE) {
+    const chunkLen = Math.min(CHUNK_SIZE, data.length - offset);
+    const chunk = data.slice(offset, offset + chunkLen);
+    await sendCmd(PC_WRITE, {
+      cmdSize: 8,
+      addr: addr + offset,
+      size: chunkLen,
+      transferLength: chunkLen,
+    }, chunk);
+  }
+}
+
+async function picobootFlashErase(addr, len) {
+  await sendCmd(PC_FLASH_ERASE, {
+    cmdSize: 8,
+    addr: addr,
+    size: len,
+  });
+  log(`Flash erase: 0x${addr.toString(16)} + 0x${len.toString(16)}`);
+}
+
+async function picobootReboot() {
+  try {
+    await sendCmd(PC_REBOOT, {
+      cmdSize: 12,
+      addr: 0,      // dPC
+      size: 0,      // dSP (reusing size field at offset 20)
+    });
+  } catch (e) {
+    // Reboot may cause USB disconnect, which is expected
+  }
+  log('Reboot sent');
+}
+
+// --- UF2 Generation (RP2040) ---
+const UF2_MAGIC_START0 = 0x0A324655;
+const UF2_MAGIC_START1 = 0x9E5D5157;
+const UF2_MAGIC_END    = 0x0AB16F30;
+const UF2_FLAG_FAMILY  = 0x00002000;
+const UF2_FAMILY_RP2040 = 0xE48BFF56;
+const UF2_PAYLOAD_SIZE = 256;
+const UF2_BLOCK_SIZE   = 512;
+
+function generateUF2(data, baseAddress) {
+  const numBlocks = Math.ceil(data.length / UF2_PAYLOAD_SIZE);
+  const out = new Uint8Array(numBlocks * UF2_BLOCK_SIZE);
+  const view = new DataView(out.buffer);
+
+  for (let i = 0; i < numBlocks; i++) {
+    const blockOff = i * UF2_BLOCK_SIZE;
+    const dataOff = i * UF2_PAYLOAD_SIZE;
+    const payloadLen = Math.min(UF2_PAYLOAD_SIZE, data.length - dataOff);
+
+    view.setUint32(blockOff + 0, UF2_MAGIC_START0, true);
+    view.setUint32(blockOff + 4, UF2_MAGIC_START1, true);
+    view.setUint32(blockOff + 8, UF2_FLAG_FAMILY, true);
+    view.setUint32(blockOff + 12, baseAddress + dataOff, true);
+    view.setUint32(blockOff + 16, UF2_PAYLOAD_SIZE, true);
+    view.setUint32(blockOff + 20, i, true);
+    view.setUint32(blockOff + 24, numBlocks, true);
+    view.setUint32(blockOff + 28, UF2_FAMILY_RP2040, true);
+
+    // Copy payload (rest of 476-byte data area stays zero)
+    out.set(data.subarray(dataOff, dataOff + payloadLen), blockOff + 32);
+
+    view.setUint32(blockOff + UF2_BLOCK_SIZE - 4, UF2_MAGIC_END, true);
+  }
+
+  return out;
+}
+
+// --- Sample Address Calculation ---
+function sampleAddr(id) {
+  // id is 1-based
+  return SAMPLE_LIBRARY_BASE + (id - 1) * SAMPLE_SIZE;
+}
+
+// --- Sample Parsing ---
+function parseSample(data, id) {
+  // Audio data: first 131054 bytes (16-bit signed PCM)
+  const audioData = data.slice(0, AUDIO_DATA_SIZE);
+
+  // Sample name: next 14 bytes (ASCII)
+  const nameBytes = data.slice(AUDIO_DATA_SIZE, AUDIO_DATA_SIZE + SAMPLE_NAME_SIZE);
+  let name = '';
+  for (let i = 0; i < SAMPLE_NAME_SIZE; i++) {
+    if (nameBytes[i] === 0) break;
+    name += String.fromCharCode(nameBytes[i]);
+  }
+
+  // Sample length: last 4 bytes (uint32 LE)
+  const lengthView = new DataView(data.buffer, data.byteOffset + AUDIO_DATA_SIZE + SAMPLE_NAME_SIZE, 4);
+  const sampleLength = lengthView.getUint32(0, true);
+
+  return { id, name: name.trim(), sampleLength, audioData };
+}
+
+// --- Sample Data Building ---
+function buildSampleData(pcmData, name, sampleLength) {
+  const data = new Uint8Array(SAMPLE_SIZE);
+  // Fill with 0xFF (erased flash state)
+  data.fill(0xFF);
+
+  // Copy PCM audio (truncate or pad)
+  const audioLen = Math.min(pcmData.length, AUDIO_DATA_SIZE);
+  data.set(pcmData.subarray(0, audioLen), 0);
+  // Zero-fill audio area beyond actual data
+  for (let i = audioLen; i < AUDIO_DATA_SIZE; i++) {
+    data[i] = 0;
+  }
+
+  // Write sample name (14 chars, zero-padded)
+  const nameBytes = new Uint8Array(SAMPLE_NAME_SIZE);
+  for (let i = 0; i < Math.min(name.length, SAMPLE_NAME_SIZE); i++) {
+    nameBytes[i] = name.charCodeAt(i) & 0x7F;
+  }
+  data.set(nameBytes, AUDIO_DATA_SIZE);
+
+  // Write sample length (uint32 LE)
+  const lenView = new DataView(data.buffer, AUDIO_DATA_SIZE + SAMPLE_NAME_SIZE, 4);
+  lenView.setUint32(0, sampleLength, true);
+
+  return data;
+}
+
+// --- Audio Playback ---
+let playbackCtx = null; // reusable AudioContext at native sample rate
+
+function getPlaybackCtx() {
+  if (!playbackCtx || playbackCtx.state === 'closed') {
+    playbackCtx = new AudioContext();
+  }
+  return playbackCtx;
+}
+
+function pcmToAudioBuffer(pcmData, numSamples) {
+  const ctx = getPlaybackCtx();
+  // 16-bit signed PCM, little-endian
+  const view = new DataView(pcmData.buffer, pcmData.byteOffset, numSamples * 2);
+  const floatData = new Float32Array(numSamples);
+  for (let i = 0; i < numSamples; i++) {
+    floatData[i] = view.getInt16(i * 2, true) / 32768.0;
+  }
+  // Buffer at SAMPLE_RATE (32kHz) - context resamples automatically
+  const audioBuffer = ctx.createBuffer(1, numSamples, SAMPLE_RATE);
+  audioBuffer.getChannelData(0).set(floatData);
+  return { ctx, audioBuffer };
+}
+
+function stopCurrentAudio() {
+  if (currentAudio) {
+    currentAudio.card.querySelector('.progress-bar').style.width = '0%';
+    currentAudio.card.querySelector('.btn-listen').textContent = 'Listen';
+    currentAudio.source.onended = null; // prevent stale handler from killing new playback
+    currentAudio.source.stop();
+    currentAudio = null;
+  }
+}
+
+// --- Waveform Drawing ---
+function drawWaveform(canvas, pcmData, numSamples) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.offsetWidth * 2;
+  const h = canvas.height = canvas.offsetHeight * 2;
+  ctx.clearRect(0, 0, w, h);
+
+  if (numSamples === 0) return;
+
+  const view = new DataView(pcmData.buffer, pcmData.byteOffset, numSamples * 2);
+  const samplesPerPixel = Math.max(1, Math.floor(numSamples / w));
+
+  ctx.strokeStyle = '#e94560';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+
+  for (let x = 0; x < w; x++) {
+    const startSample = Math.floor((x / w) * numSamples);
+    let min = 1, max = -1;
+    for (let j = 0; j < samplesPerPixel && (startSample + j) < numSamples; j++) {
+      const val = view.getInt16((startSample + j) * 2, true) / 32768.0;
+      if (val < min) min = val;
+      if (val > max) max = val;
+    }
+    const yMin = ((1 - max) / 2) * h;
+    const yMax = ((1 - min) / 2) * h;
+    ctx.moveTo(x, yMin);
+    ctx.lineTo(x, yMax);
+  }
+  ctx.stroke();
+}
+
+// --- Audio Editor ---
+const editor = {
+  original: null,    // Float32Array
+  current: null,     // Float32Array
+  undoStack: [],
+  redoStack: [],
+  trimStart: 0,
+  trimEnd: 0,
+  audioCtx: null,
+  sourceNode: null,
+  playing: false,
+  dragging: null,    // 'start' | 'end' | null
+  viewStart: 0,      // visible range start (sample index)
+  viewEnd: 0,        // visible range end (sample index)
+};
+const MAX_UNDO = 20;
+const MAX_SAMPLES_COUNT = Math.floor(AUDIO_DATA_SIZE / 2);
+
+function pcmToFloat32(pcmData, numSamples) {
+  const view = new DataView(pcmData.buffer, pcmData.byteOffset, numSamples * 2);
+  const out = new Float32Array(numSamples);
+  for (let i = 0; i < numSamples; i++) {
+    out[i] = view.getInt16(i * 2, true) / 32768.0;
+  }
+  return out;
+}
+
+function float32ToPCM(floatData) {
+  const pcm = new Uint8Array(floatData.length * 2);
+  const view = new DataView(pcm.buffer);
+  for (let i = 0; i < floatData.length; i++) {
+    const val = Math.max(-1, Math.min(1, floatData[i]));
+    view.setInt16(i * 2, Math.round(val * 32767), true);
+  }
+  return pcm;
+}
+
+function initEditor(float32Data) {
+  editor.original = new Float32Array(float32Data);
+  editor.current = new Float32Array(float32Data);
+  editor.undoStack = [];
+  editor.redoStack = [];
+  editor.trimStart = 0;
+  editor.trimEnd = Math.min(float32Data.length, MAX_SAMPLES_COUNT);
+  editor.viewStart = 0;
+  editor.viewEnd = float32Data.length;
+  editor.playing = false;
+  editor.sourceNode = null;
+
+  document.getElementById('editor-panel').style.display = '';
+  document.querySelector('#upload-modal .modal').classList.add('has-editor');
+  document.getElementById('btn-do-upload').disabled = false;
+
+  setupTrimInteraction();
+  // Defer drawing until browser has laid out the panel so canvas has dimensions
+  requestAnimationFrame(() => {
+    updateEditor();
+  });
+}
+
+function hideEditor() {
+  editorStop();
+  document.getElementById('editor-panel').style.display = 'none';
+  document.querySelector('#upload-modal .modal').classList.remove('has-editor');
+  editor.original = null;
+  editor.current = null;
+  editor.undoStack = [];
+  editor.redoStack = [];
+}
+
+function updateEditor() {
+  // Clamp view to current data length (data may have changed via effects)
+  if (editor.current) {
+    const len = editor.current.length;
+    editor.viewEnd = Math.min(editor.viewEnd, len);
+    editor.viewStart = Math.min(editor.viewStart, editor.viewEnd);
+    if (editor.viewEnd <= editor.viewStart) {
+      editor.viewStart = 0;
+      editor.viewEnd = len;
+    }
+  }
+  drawEditorWaveform();
+  updateTrimInputs();
+  updateEditorInfo();
+  updateUndoButtons();
+}
+
+function sampleToCanvasX(sample, w) {
+  const viewLen = editor.viewEnd - editor.viewStart;
+  if (viewLen <= 0) return 0;
+  return ((sample - editor.viewStart) / viewLen) * w;
+}
+
+function canvasXToSample(px, w) {
+  const viewLen = editor.viewEnd - editor.viewStart;
+  const total = editor.current.length;
+  const s = editor.viewStart + (px / w) * viewLen;
+  return Math.max(0, Math.min(total, Math.round(s)));
+}
+
+function drawEditorWaveform() {
+  const canvas = document.getElementById('editor-canvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.offsetWidth * 2;
+  const h = canvas.height = canvas.offsetHeight * 2;
+  ctx.clearRect(0, 0, w, h);
+
+  const data = editor.current;
+  if (!data || data.length === 0) return;
+
+  const vStart = editor.viewStart;
+  const vEnd = editor.viewEnd;
+  const viewLen = vEnd - vStart;
+  if (viewLen <= 0) return;
+
+  const trimStartX = sampleToCanvasX(editor.trimStart, w);
+  const trimEndX = sampleToCanvasX(editor.trimEnd, w);
+
+  // Dimmed outside trim region
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  if (trimStartX > 0) ctx.fillRect(0, 0, Math.max(0, trimStartX), h);
+  if (trimEndX < w) ctx.fillRect(Math.min(w, trimEndX), 0, w - Math.min(w, trimEndX), h);
+
+  // Draw waveform
+  const samplesPerPixel = Math.max(1, Math.floor(viewLen / w));
+  for (let x = 0; x < w; x++) {
+    const startSample = Math.floor(vStart + (x / w) * viewLen);
+    let min = 1, max = -1;
+    for (let j = 0; j < samplesPerPixel && (startSample + j) < data.length; j++) {
+      const val = data[startSample + j];
+      if (val < min) min = val;
+      if (val > max) max = val;
+    }
+    const yMin = ((1 - max) / 2) * h;
+    const yMax = ((1 - min) / 2) * h;
+
+    const inTrim = x >= trimStartX && x <= trimEndX;
+    ctx.strokeStyle = inTrim ? '#e94560' : '#e9456060';
+    ctx.beginPath();
+    ctx.moveTo(x, yMin);
+    ctx.lineTo(x, yMax);
+    ctx.stroke();
+  }
+
+  // Trim handles (only draw if visible)
+  ctx.lineWidth = 2;
+  if (editor.trimStart >= vStart && editor.trimStart <= vEnd) {
+    ctx.strokeStyle = '#4caf50';
+    ctx.beginPath();
+    ctx.moveTo(trimStartX, 0);
+    ctx.lineTo(trimStartX, h);
+    ctx.stroke();
+    ctx.fillStyle = '#4caf50';
+    ctx.fillRect(trimStartX - 6, 0, 12, 14);
+    ctx.fillRect(trimStartX - 6, h - 14, 12, 14);
+  }
+  if (editor.trimEnd >= vStart && editor.trimEnd <= vEnd) {
+    ctx.strokeStyle = '#f44336';
+    ctx.beginPath();
+    ctx.moveTo(trimEndX, 0);
+    ctx.lineTo(trimEndX, h);
+    ctx.stroke();
+    ctx.fillStyle = '#f44336';
+    ctx.fillRect(trimEndX - 6, 0, 12, 14);
+    ctx.fillRect(trimEndX - 6, h - 14, 12, 14);
+  }
+
+  // Zoom info & scrollbar
+  const zoomLevel = data.length / viewLen;
+  const viewDur = (viewLen / SAMPLE_RATE).toFixed(3);
+  document.getElementById('zoom-info').textContent =
+    zoomLevel > 1.01 ? `${zoomLevel.toFixed(1)}x zoom (${viewDur}s visible)` : '';
+
+  const scrollbar = document.getElementById('editor-scrollbar');
+  const thumb = document.getElementById('editor-scrollbar-thumb');
+  if (zoomLevel > 1.01) {
+    scrollbar.classList.add('visible');
+    const thumbWidth = Math.max(16, (viewLen / data.length) * 100);
+    const thumbLeft = (vStart / data.length) * 100;
+    thumb.style.width = thumbWidth + '%';
+    thumb.style.left = thumbLeft + '%';
+  } else {
+    scrollbar.classList.remove('visible');
+  }
+}
+
+let trimAC = null; // AbortController for trim interaction listeners
+
+function editorZoom(factor, centerPx) {
+  if (!editor.current) return;
+  const total = editor.current.length;
+  const canvas = document.getElementById('editor-canvas');
+  const viewLen = editor.viewEnd - editor.viewStart;
+
+  // Center zoom on mouse position or view center
+  const centerRatio = centerPx != null ? centerPx / canvas.offsetWidth : 0.5;
+  const centerSample = editor.viewStart + viewLen * centerRatio;
+
+  let newLen = Math.round(viewLen / factor);
+  newLen = Math.max(100, Math.min(total, newLen)); // min 100 samples visible
+
+  let newStart = Math.round(centerSample - newLen * centerRatio);
+  let newEnd = newStart + newLen;
+
+  // Clamp to bounds
+  if (newStart < 0) { newStart = 0; newEnd = newLen; }
+  if (newEnd > total) { newEnd = total; newStart = Math.max(0, total - newLen); }
+
+  editor.viewStart = newStart;
+  editor.viewEnd = newEnd;
+  drawEditorWaveform();
+}
+
+function editorPan(deltaSamples) {
+  if (!editor.current) return;
+  const total = editor.current.length;
+  const viewLen = editor.viewEnd - editor.viewStart;
+
+  let newStart = editor.viewStart + deltaSamples;
+  if (newStart < 0) newStart = 0;
+  if (newStart + viewLen > total) newStart = total - viewLen;
+
+  editor.viewStart = newStart;
+  editor.viewEnd = newStart + viewLen;
+  drawEditorWaveform();
+}
+
+function setupTrimInteraction() {
+  // Abort previous listeners
+  if (trimAC) trimAC.abort();
+  trimAC = new AbortController();
+  const signal = trimAC.signal;
+
+  const canvas = document.getElementById('editor-canvas');
+  const HANDLE_HIT = 16; // px hit zone
+
+  function getMouseX(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return clientX - rect.left;
+  }
+
+  function xToSample(px) {
+    const viewLen = editor.viewEnd - editor.viewStart;
+    const total = editor.current.length;
+    const s = editor.viewStart + (px / canvas.offsetWidth) * viewLen;
+    return Math.max(0, Math.min(total, Math.round(s)));
+  }
+
+  function sampleToX(s) {
+    const viewLen = editor.viewEnd - editor.viewStart;
+    return ((s - editor.viewStart) / viewLen) * canvas.offsetWidth;
+  }
+
+  function onDown(e) {
+    // Middle button = pan
+    if (e.button === 1) {
+      e.preventDefault();
+      editor.dragging = 'pan';
+      editor._panLastX = getMouseX(e);
+      return;
+    }
+    if (e.button && e.button !== 0) return;
+    e.preventDefault();
+    const mx = getMouseX(e);
+    const startX = sampleToX(editor.trimStart);
+    const endX = sampleToX(editor.trimEnd);
+
+    if (Math.abs(mx - startX) < HANDLE_HIT) {
+      editor.dragging = 'start';
+    } else if (Math.abs(mx - endX) < HANDLE_HIT) {
+      editor.dragging = 'end';
+    } else {
+      if (Math.abs(mx - startX) < Math.abs(mx - endX)) {
+        editor.dragging = 'start';
+      } else {
+        editor.dragging = 'end';
+      }
+      onMove(e);
+    }
+  }
+
+  function onMove(e) {
+    if (!editor.dragging) return;
+    e.preventDefault();
+    const mx = getMouseX(e);
+
+    if (editor.dragging === 'pan') {
+      const dx = mx - editor._panLastX;
+      const viewLen = editor.viewEnd - editor.viewStart;
+      const deltaSamples = Math.round((-dx / canvas.offsetWidth) * viewLen);
+      editorPan(deltaSamples);
+      editor._panLastX = mx;
+      return;
+    }
+
+    const s = xToSample(mx);
+
+    if (editor.dragging === 'start') {
+      editor.trimStart = Math.min(s, editor.trimEnd - 1);
+      if (editor.trimEnd - editor.trimStart > MAX_SAMPLES_COUNT) {
+        editor.trimEnd = editor.trimStart + MAX_SAMPLES_COUNT;
+      }
+    } else {
+      editor.trimEnd = Math.max(s, editor.trimStart + 1);
+      if (editor.trimEnd - editor.trimStart > MAX_SAMPLES_COUNT) {
+        editor.trimStart = editor.trimEnd - MAX_SAMPLES_COUNT;
+      }
+    }
+    drawEditorWaveform();
+    updateTrimInputs();
+    updateEditorInfo();
+  }
+
+  function onUp() {
+    editor.dragging = null;
+  }
+
+  // Mouse wheel zoom (centered on cursor)
+  function onWheel(e) {
+    e.preventDefault();
+    const mx = getMouseX(e);
+    const factor = e.deltaY < 0 ? 1.3 : 1 / 1.3;
+    editorZoom(factor, mx);
+  }
+
+  canvas.addEventListener('mousedown', onDown, { signal });
+  window.addEventListener('mousemove', onMove, { signal });
+  window.addEventListener('mouseup', onUp, { signal });
+  canvas.addEventListener('touchstart', onDown, { passive: false, signal });
+  window.addEventListener('touchmove', onMove, { passive: false, signal });
+  window.addEventListener('touchend', onUp, { signal });
+  canvas.addEventListener('wheel', onWheel, { passive: false, signal });
+
+  // Scrollbar drag
+  const scrollbar = document.getElementById('editor-scrollbar');
+  const thumb = document.getElementById('editor-scrollbar-thumb');
+  let scrollDragging = false;
+  let scrollStartX = 0;
+  let scrollStartViewStart = 0;
+
+  thumb.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    scrollDragging = true;
+    scrollStartX = e.clientX;
+    scrollStartViewStart = editor.viewStart;
+  }, { signal });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!scrollDragging || !editor.current) return;
+    e.preventDefault();
+    const dx = e.clientX - scrollStartX;
+    const barWidth = scrollbar.offsetWidth;
+    const total = editor.current.length;
+    const deltaSamples = Math.round((dx / barWidth) * total);
+    const viewLen = editor.viewEnd - editor.viewStart;
+    let newStart = scrollStartViewStart + deltaSamples;
+    newStart = Math.max(0, Math.min(total - viewLen, newStart));
+    editor.viewStart = newStart;
+    editor.viewEnd = newStart + viewLen;
+    drawEditorWaveform();
+  }, { signal });
+
+  window.addEventListener('mouseup', () => { scrollDragging = false; }, { signal });
+
+  // Click on scrollbar track to jump
+  scrollbar.addEventListener('click', (e) => {
+    if (e.target === thumb || !editor.current) return;
+    const rect = scrollbar.getBoundingClientRect();
+    const clickRatio = (e.clientX - rect.left) / rect.width;
+    const total = editor.current.length;
+    const viewLen = editor.viewEnd - editor.viewStart;
+    let newStart = Math.round(clickRatio * total - viewLen / 2);
+    newStart = Math.max(0, Math.min(total - viewLen, newStart));
+    editor.viewStart = newStart;
+    editor.viewEnd = newStart + viewLen;
+    drawEditorWaveform();
+  }, { signal });
+}
+
+function updateTrimInputs() {
+  document.getElementById('trim-start').value = editor.trimStart;
+  document.getElementById('trim-start').max = editor.current ? editor.current.length : 0;
+  document.getElementById('trim-start-time').textContent =
+    (editor.trimStart / SAMPLE_RATE).toFixed(3) + 's';
+
+  document.getElementById('trim-end').value = editor.trimEnd;
+  document.getElementById('trim-end').max = editor.current ? editor.current.length : 0;
+  document.getElementById('trim-end-time').textContent =
+    (editor.trimEnd / SAMPLE_RATE).toFixed(3) + 's';
+}
+
+function updateEditorInfo() {
+  const trimLen = editor.trimEnd - editor.trimStart;
+  const dur = (trimLen / SAMPLE_RATE).toFixed(3);
+  const maxDur = (MAX_SAMPLES_COUNT / SAMPLE_RATE).toFixed(3);
+  let info = `Selection: ${trimLen} samples (${dur}s)`;
+  if (editor.current && editor.current.length > MAX_SAMPLES_COUNT) {
+    info += ` — max: ${MAX_SAMPLES_COUNT} (${maxDur}s)`;
+  }
+  document.getElementById('ed-info').textContent = info;
+}
+
+function updateUndoButtons() {
+  document.getElementById('btn-ed-undo').disabled = editor.undoStack.length === 0;
+  document.getElementById('btn-ed-redo').disabled = editor.redoStack.length === 0;
+}
+
+function editorPushUndo() {
+  editor.undoStack.push({
+    data: new Float32Array(editor.current),
+    trimStart: editor.trimStart,
+    trimEnd: editor.trimEnd,
+  });
+  if (editor.undoStack.length > MAX_UNDO) editor.undoStack.shift();
+  editor.redoStack = [];
+  updateUndoButtons();
+}
+
+function editorUndo() {
+  if (editor.undoStack.length === 0) return;
+  editor.redoStack.push({
+    data: new Float32Array(editor.current),
+    trimStart: editor.trimStart,
+    trimEnd: editor.trimEnd,
+  });
+  const state = editor.undoStack.pop();
+  editor.current = state.data;
+  editor.trimStart = state.trimStart;
+  editor.trimEnd = state.trimEnd;
+  editor.viewEnd = Math.min(editor.viewEnd, editor.current.length);
+  editor.viewStart = Math.min(editor.viewStart, editor.viewEnd);
+  updateEditor();
+}
+
+function editorRedo() {
+  if (editor.redoStack.length === 0) return;
+  editor.undoStack.push({
+    data: new Float32Array(editor.current),
+    trimStart: editor.trimStart,
+    trimEnd: editor.trimEnd,
+  });
+  const state = editor.redoStack.pop();
+  editor.current = state.data;
+  editor.trimStart = state.trimStart;
+  editor.trimEnd = state.trimEnd;
+  editor.viewEnd = Math.min(editor.viewEnd, editor.current.length);
+  editor.viewStart = Math.min(editor.viewStart, editor.viewEnd);
+  updateEditor();
+}
+
+function editorReset() {
+  if (!editor.original) return;
+  editorPushUndo();
+  editor.current = new Float32Array(editor.original);
+  editor.trimStart = 0;
+  editor.trimEnd = Math.min(editor.current.length, MAX_SAMPLES_COUNT);
+  editor.viewStart = 0;
+  editor.viewEnd = editor.current.length;
+  updateEditor();
+}
+
+// --- Editor Effects ---
+
+function editorApplyEffect(fn) {
+  editorPushUndo();
+  editor.current = fn(editor.current);
+  // Adjust trim bounds if data length changed
+  editor.trimStart = Math.min(editor.trimStart, editor.current.length);
+  editor.trimEnd = Math.min(editor.trimEnd, editor.current.length);
+  if (editor.trimEnd <= editor.trimStart) editor.trimEnd = editor.current.length;
+  // Adjust view bounds
+  editor.viewStart = Math.min(editor.viewStart, editor.current.length);
+  editor.viewEnd = Math.min(editor.viewEnd, editor.current.length);
+  if (editor.viewEnd <= editor.viewStart) {
+    editor.viewStart = 0;
+    editor.viewEnd = editor.current.length;
+  }
+  updateEditor();
+}
+
+function effectGain(data, gain) {
+  const out = new Float32Array(data.length);
+  for (let i = 0; i < data.length; i++) {
+    out[i] = Math.max(-1, Math.min(1, data[i] * gain));
+  }
+  return out;
+}
+
+function effectNormalize(data) {
+  let peak = 0;
+  for (let i = 0; i < data.length; i++) {
+    const a = Math.abs(data[i]);
+    if (a > peak) peak = a;
+  }
+  if (peak === 0) return new Float32Array(data);
+  return effectGain(data, 0.95 / peak);
+}
+
+function effectReverse(data) {
+  const out = new Float32Array(data.length);
+  for (let i = 0; i < data.length; i++) {
+    out[i] = data[data.length - 1 - i];
+  }
+  return out;
+}
+
+function effectFadeIn(data, fadeSamples) {
+  const out = new Float32Array(data);
+  const n = Math.min(fadeSamples, data.length);
+  for (let i = 0; i < n; i++) {
+    out[i] *= i / n;
+  }
+  return out;
+}
+
+function effectFadeOut(data, fadeSamples) {
+  const out = new Float32Array(data);
+  const n = Math.min(fadeSamples, data.length);
+  const start = data.length - n;
+  for (let i = start; i < data.length; i++) {
+    out[i] *= (data.length - i) / n;
+  }
+  return out;
+}
+
+async function effectSpeed(data, factor) {
+  const srcLen = data.length;
+  const dstLen = Math.round(srcLen / factor);
+  if (dstLen === 0) return new Float32Array(1);
+
+  const offCtx = new OfflineAudioContext(1, dstLen, SAMPLE_RATE);
+  const buf = offCtx.createBuffer(1, srcLen, SAMPLE_RATE);
+  buf.getChannelData(0).set(data);
+  const src = offCtx.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = factor;
+  src.connect(offCtx.destination);
+  src.start();
+  const rendered = await offCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+function effectBitCrush(data, bits) {
+  const out = new Float32Array(data.length);
+  const levels = Math.pow(2, bits);
+  for (let i = 0; i < data.length; i++) {
+    out[i] = Math.round(((data[i] + 1) / 2) * (levels - 1)) / (levels - 1) * 2 - 1;
+  }
+  return out;
+}
+
+async function effectFilter(data, mode, cutoff, q, drive) {
+  const offCtx = new OfflineAudioContext(1, data.length, SAMPLE_RATE);
+  const buf = offCtx.createBuffer(1, data.length, SAMPLE_RATE);
+  const chan = buf.getChannelData(0);
+
+  // Apply overdrive (pre-filter distortion) if enabled
+  if (drive > 0) {
+    const amount = 1 + drive * 10;
+    for (let i = 0; i < data.length; i++) {
+      chan[i] = Math.tanh(data[i] * amount) / Math.tanh(amount);
+    }
+  } else {
+    chan.set(data);
+  }
+
+  const src = offCtx.createBufferSource();
+  src.buffer = buf;
+  const filter = offCtx.createBiquadFilter();
+  filter.type = mode;
+  filter.frequency.value = cutoff;
+  filter.Q.value = q;
+  src.connect(filter);
+  filter.connect(offCtx.destination);
+  src.start();
+  const rendered = await offCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+async function effectReverb(data, decayTime, mix) {
+  const irLen = Math.round(SAMPLE_RATE * decayTime);
+  const irBuf = new Float32Array(irLen);
+  for (let i = 0; i < irLen; i++) {
+    irBuf[i] = (Math.random() * 2 - 1) * Math.exp(-3 * i / irLen);
+  }
+
+  const outLen = data.length;
+  const offCtx = new OfflineAudioContext(1, outLen, SAMPLE_RATE);
+
+  const srcBuf = offCtx.createBuffer(1, data.length, SAMPLE_RATE);
+  srcBuf.getChannelData(0).set(data);
+
+  const ir = offCtx.createBuffer(1, irLen, SAMPLE_RATE);
+  ir.getChannelData(0).set(irBuf);
+
+  const convolver = offCtx.createConvolver();
+  convolver.buffer = ir;
+
+  const src = offCtx.createBufferSource();
+  src.buffer = srcBuf;
+  src.connect(convolver);
+  convolver.connect(offCtx.destination);
+  src.start();
+
+  const rendered = await offCtx.startRendering();
+  const wet = rendered.getChannelData(0);
+  const out = new Float32Array(outLen);
+  for (let i = 0; i < outLen; i++) {
+    out[i] = Math.max(-1, Math.min(1, (1 - mix) * data[i] + mix * wet[i]));
+  }
+  return out;
+}
+
+async function effectDelay(data, delayMs, feedback, mix) {
+  const delaySec = delayMs / 1000;
+  const outLen = data.length;
+  const offCtx = new OfflineAudioContext(1, outLen, SAMPLE_RATE);
+
+  const srcBuf = offCtx.createBuffer(1, data.length, SAMPLE_RATE);
+  srcBuf.getChannelData(0).set(data);
+
+  const src = offCtx.createBufferSource();
+  src.buffer = srcBuf;
+
+  const dryGain = offCtx.createGain();
+  dryGain.gain.value = 1 - mix;
+
+  const wetGain = offCtx.createGain();
+  wetGain.gain.value = mix;
+
+  const delay = offCtx.createDelay(Math.max(delaySec, 0.01));
+  delay.delayTime.value = delaySec;
+
+  const fbGain = offCtx.createGain();
+  fbGain.gain.value = feedback;
+
+  // Dry path
+  src.connect(dryGain);
+  dryGain.connect(offCtx.destination);
+
+  // Wet path with feedback loop
+  src.connect(delay);
+  delay.connect(fbGain);
+  fbGain.connect(delay);
+  delay.connect(wetGain);
+  wetGain.connect(offCtx.destination);
+
+  src.start();
+  const rendered = await offCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+function effectAutoTrim(data, thresholdDb) {
+  const threshold = Math.pow(10, thresholdDb / 20);
+  let start = 0;
+  let end = data.length;
+  for (let i = 0; i < data.length; i++) {
+    if (Math.abs(data[i]) >= threshold) { start = i; break; }
+  }
+  for (let i = data.length - 1; i >= start; i--) {
+    if (Math.abs(data[i]) >= threshold) { end = i + 1; break; }
+  }
+  if (start >= end) return new Float32Array(1);
+  return data.slice(start, end);
+}
+
+async function effectCompress(data, threshold, ratio, attack, release, makeupDb) {
+  const outLen = data.length;
+  const offCtx = new OfflineAudioContext(1, outLen, SAMPLE_RATE);
+
+  const srcBuf = offCtx.createBuffer(1, data.length, SAMPLE_RATE);
+  srcBuf.getChannelData(0).set(data);
+
+  const src = offCtx.createBufferSource();
+  src.buffer = srcBuf;
+
+  const compressor = offCtx.createDynamicsCompressor();
+  compressor.threshold.value = threshold;
+  compressor.ratio.value = ratio;
+  compressor.attack.value = attack / 1000;
+  compressor.release.value = release / 1000;
+  compressor.knee.value = 6;
+
+  const makeup = offCtx.createGain();
+  makeup.gain.value = Math.pow(10, makeupDb / 20);
+
+  src.connect(compressor);
+  compressor.connect(makeup);
+  makeup.connect(offCtx.destination);
+  src.start();
+
+  const rendered = await offCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+// --- Editor Playback ---
+
+function editorPlay() {
+  editorStop();
+  if (!editor.current) return;
+
+  const trimmed = editor.current.slice(editor.trimStart, editor.trimEnd);
+  if (trimmed.length === 0) return;
+
+  const ctx = getPlaybackCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  const buf = ctx.createBuffer(1, trimmed.length, SAMPLE_RATE);
+  buf.getChannelData(0).set(trimmed);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.connect(ctx.destination);
+  src.start();
+
+  editor.sourceNode = src;
+  editor.playing = true;
+
+  const btn = document.getElementById('btn-ed-play');
+  btn.textContent = 'Stop';
+
+  src.onended = () => {
+    editor.playing = false;
+    editor.sourceNode = null;
+    btn.textContent = 'Play';
+  };
+}
+
+function editorStop() {
+  if (editor.sourceNode) {
+    editor.sourceNode.onended = null;
+    try { editor.sourceNode.stop(); } catch (_) {}
+  }
+  editor.sourceNode = null;
+  editor.playing = false;
+  document.getElementById('btn-ed-play').textContent = 'Play';
+}
+
+// --- Editor Event Wiring ---
+
+// Tabs
+document.getElementById('editor-tabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-tab]');
+  if (!btn) return;
+  document.querySelectorAll('#editor-tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.editor-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+  if (btn.dataset.tab === 'tab-filter') drawFilterResponse();
+});
+
+// Playback
+document.getElementById('btn-ed-play').addEventListener('click', () => {
+  if (editor.playing) {
+    editorStop();
+  } else {
+    editorPlay();
+  }
+});
+
+// Trim numeric inputs
+document.getElementById('trim-start').addEventListener('change', (e) => {
+  editor.trimStart = Math.max(0, Math.min(parseInt(e.target.value) || 0, editor.trimEnd - 1));
+  // Enforce max length
+  if (editor.trimEnd - editor.trimStart > MAX_SAMPLES_COUNT) {
+    editor.trimEnd = editor.trimStart + MAX_SAMPLES_COUNT;
+  }
+  drawEditorWaveform();
+  updateTrimInputs();
+  updateEditorInfo();
+});
+document.getElementById('trim-end').addEventListener('change', (e) => {
+  if (!editor.current) return;
+  editor.trimEnd = Math.max(editor.trimStart + 1,
+    Math.min(parseInt(e.target.value) || 0, editor.current.length));
+  // Enforce max length
+  if (editor.trimEnd - editor.trimStart > MAX_SAMPLES_COUNT) {
+    editor.trimStart = editor.trimEnd - MAX_SAMPLES_COUNT;
+  }
+  drawEditorWaveform();
+  updateTrimInputs();
+  updateEditorInfo();
+});
+
+// Gain slider display
+document.getElementById('ed-gain').addEventListener('input', (e) => {
+  const g = parseInt(e.target.value) / 100;
+  const db = g > 0 ? (20 * Math.log10(g)).toFixed(1) : '-inf';
+  document.getElementById('ed-gain-val').textContent = `${g.toFixed(2)}x (${db}dB)`;
+});
+document.getElementById('btn-ed-gain').addEventListener('click', () => {
+  const g = parseInt(document.getElementById('ed-gain').value) / 100;
+  editorApplyEffect(d => effectGain(d, g));
+});
+document.getElementById('btn-ed-normalize').addEventListener('click', () => {
+  editorApplyEffect(effectNormalize);
+});
+
+// Transform
+document.getElementById('btn-ed-reverse').addEventListener('click', () => {
+  editorApplyEffect(effectReverse);
+});
+
+document.getElementById('ed-fade-ms').addEventListener('input', (e) => {
+  document.getElementById('ed-fade-val').textContent = e.target.value + 'ms';
+});
+document.getElementById('btn-ed-fade-in').addEventListener('click', () => {
+  const ms = parseInt(document.getElementById('ed-fade-ms').value);
+  const samples = Math.round(ms / 1000 * SAMPLE_RATE);
+  editorApplyEffect(d => effectFadeIn(d, samples));
+});
+document.getElementById('btn-ed-fade-out').addEventListener('click', () => {
+  const ms = parseInt(document.getElementById('ed-fade-ms').value);
+  const samples = Math.round(ms / 1000 * SAMPLE_RATE);
+  editorApplyEffect(d => effectFadeOut(d, samples));
+});
+
+// Speed
+document.getElementById('ed-speed').addEventListener('input', (e) => {
+  const s = parseInt(e.target.value) / 100;
+  document.getElementById('ed-speed-val').textContent = s.toFixed(2) + 'x';
+  // Show warning if result would be too long
+  if (editor.current) {
+    const resultLen = Math.round(editor.current.length / s);
+    const warn = document.getElementById('ed-speed-warn');
+    if (resultLen > MAX_SAMPLES_COUNT) {
+      warn.style.display = '';
+      warn.textContent = `Result: ${resultLen} samples (max ${MAX_SAMPLES_COUNT})`;
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+});
+document.getElementById('btn-ed-speed').addEventListener('click', async () => {
+  const factor = parseInt(document.getElementById('ed-speed').value) / 100;
+  const btn = document.getElementById('btn-ed-speed');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    editorPushUndo();
+    editor.current = await effectSpeed(editor.current, factor);
+    editor.trimStart = Math.min(editor.trimStart, editor.current.length);
+    editor.trimEnd = Math.min(editor.trimEnd, editor.current.length);
+    if (editor.trimEnd <= editor.trimStart) editor.trimEnd = editor.current.length;
+    updateEditor();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Apply Speed';
+    document.getElementById('ed-speed').value = 100;
+    document.getElementById('ed-speed-val').textContent = '1.00x';
+    document.getElementById('ed-speed-warn').style.display = 'none';
+  }
+});
+
+// Bit crush
+document.getElementById('ed-bits').addEventListener('input', (e) => {
+  document.getElementById('ed-bits-val').textContent = e.target.value + '-bit';
+});
+document.getElementById('btn-ed-crush').addEventListener('click', () => {
+  const bits = parseInt(document.getElementById('ed-bits').value);
+  editorApplyEffect(d => effectBitCrush(d, bits));
+});
+
+// Filter
+function drawFilterResponse() {
+  const canvas = document.getElementById('filter-response-canvas');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const mode = document.getElementById('ed-filter-mode').value;
+  const cutoff = parseInt(document.getElementById('ed-filter-cutoff').value);
+  const q = parseInt(document.getElementById('ed-filter-q').value) / 10;
+
+  // Use an offline AudioContext just to create a BiquadFilter for getFrequencyResponse
+  const actx = new OfflineAudioContext(1, 1, SAMPLE_RATE);
+  const filter = actx.createBiquadFilter();
+  filter.type = mode;
+  filter.frequency.value = cutoff;
+  filter.Q.value = q;
+
+  // Generate log-spaced frequencies from 20Hz to Nyquist
+  const nyquist = SAMPLE_RATE / 2;
+  const numPoints = w;
+  const freqs = new Float32Array(numPoints);
+  const magResponse = new Float32Array(numPoints);
+  const phaseResponse = new Float32Array(numPoints);
+  const minFreq = 20;
+  const logMin = Math.log10(minFreq);
+  const logMax = Math.log10(nyquist);
+  for (let i = 0; i < numPoints; i++) {
+    freqs[i] = Math.pow(10, logMin + (i / (numPoints - 1)) * (logMax - logMin));
+  }
+  filter.getFrequencyResponse(freqs, magResponse, phaseResponse);
+
+  // Background
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim();
+  ctx.fillRect(0, 0, w, h);
+
+  // Grid lines at key dB levels
+  const dbMin = -36;
+  const dbMax = 24;
+  const dbRange = dbMax - dbMin;
+  function dbToY(db) { return h - ((db - dbMin) / dbRange) * h; }
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 4]);
+  const gridLevels = [-24, -12, 0, 12];
+  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim();
+  ctx.fillStyle = textColor;
+  ctx.font = '10px monospace';
+  ctx.textBaseline = 'middle';
+  for (const db of gridLevels) {
+    const y = dbToY(db);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+    ctx.fillText((db > 0 ? '+' : '') + db + 'dB', 4, y - 1);
+  }
+
+  // Frequency grid lines
+  const freqMarks = [100, 1000, 10000];
+  for (const f of freqMarks) {
+    if (f >= nyquist) continue;
+    const x = ((Math.log10(f) - logMin) / (logMax - logMin)) * w;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
+    ctx.stroke();
+    const label = f >= 1000 ? (f / 1000) + 'k' : f + '';
+    ctx.fillText(label, x + 3, h - 6);
+  }
+  ctx.setLineDash([]);
+
+  // 0dB reference line
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, dbToY(0));
+  ctx.lineTo(w, dbToY(0));
+  ctx.stroke();
+
+  // Draw response curve
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < numPoints; i++) {
+    const db = 20 * Math.log10(Math.max(magResponse[i], 1e-6));
+    const y = Math.max(0, Math.min(h, dbToY(db)));
+    if (i === 0) ctx.moveTo(i, y);
+    else ctx.lineTo(i, y);
+  }
+  ctx.stroke();
+
+  // Fill under curve
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fillStyle = accent.replace(')', ', 0.15)').replace('rgb(', 'rgba(');
+  ctx.fill();
+}
+
+document.getElementById('ed-filter-cutoff').addEventListener('input', (e) => {
+  document.getElementById('ed-filter-cutoff-val').textContent = e.target.value + ' Hz';
+  drawFilterResponse();
+});
+document.getElementById('ed-filter-q').addEventListener('input', (e) => {
+  const v = (parseInt(e.target.value) / 10).toFixed(1);
+  document.getElementById('ed-filter-q-val').textContent = v;
+  drawFilterResponse();
+});
+document.getElementById('ed-filter-drive').addEventListener('input', (e) => {
+  const v = parseInt(e.target.value);
+  document.getElementById('ed-filter-drive-val').textContent = v === 0 ? 'Off' : (v / 100).toFixed(2) + 'x';
+});
+document.getElementById('ed-filter-mode').addEventListener('change', drawFilterResponse);
+document.getElementById('btn-ed-filter').addEventListener('click', async () => {
+  const mode = document.getElementById('ed-filter-mode').value;
+  const cutoff = parseInt(document.getElementById('ed-filter-cutoff').value);
+  const q = parseInt(document.getElementById('ed-filter-q').value) / 10;
+  const drive = parseInt(document.getElementById('ed-filter-drive').value) / 100;
+  const btn = document.getElementById('btn-ed-filter');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    editorPushUndo();
+    editor.current = await effectFilter(editor.current, mode, cutoff, q, drive);
+    updateEditor();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Apply Filter';
+  }
+});
+
+// Auto Trim
+document.getElementById('ed-autotrim-thresh').addEventListener('input', (e) => {
+  document.getElementById('ed-autotrim-val').textContent = e.target.value + ' dB';
+});
+document.getElementById('btn-ed-autotrim').addEventListener('click', () => {
+  const thresh = parseInt(document.getElementById('ed-autotrim-thresh').value);
+  editorApplyEffect(d => effectAutoTrim(d, thresh));
+});
+
+// Reverb
+document.getElementById('ed-reverb-decay').addEventListener('input', (e) => {
+  document.getElementById('ed-reverb-decay-val').textContent = (parseInt(e.target.value) / 10).toFixed(1) + 's';
+});
+document.getElementById('ed-reverb-mix').addEventListener('input', (e) => {
+  document.getElementById('ed-reverb-mix-val').textContent = e.target.value + '%';
+});
+document.getElementById('btn-ed-reverb').addEventListener('click', async () => {
+  const decay = parseInt(document.getElementById('ed-reverb-decay').value) / 10;
+  const mix = parseInt(document.getElementById('ed-reverb-mix').value) / 100;
+  const btn = document.getElementById('btn-ed-reverb');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    editorPushUndo();
+    editor.current = await effectReverb(editor.current, decay, mix);
+    updateEditor();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Apply Reverb';
+  }
+});
+
+// Delay
+document.getElementById('ed-delay-time').addEventListener('input', (e) => {
+  document.getElementById('ed-delay-time-val').textContent = e.target.value + ' ms';
+});
+document.getElementById('ed-delay-feedback').addEventListener('input', (e) => {
+  document.getElementById('ed-delay-feedback-val').textContent = e.target.value + '%';
+});
+document.getElementById('ed-delay-mix').addEventListener('input', (e) => {
+  document.getElementById('ed-delay-mix-val').textContent = e.target.value + '%';
+});
+document.getElementById('btn-ed-delay').addEventListener('click', async () => {
+  const time = parseInt(document.getElementById('ed-delay-time').value);
+  const feedback = parseInt(document.getElementById('ed-delay-feedback').value) / 100;
+  const mix = parseInt(document.getElementById('ed-delay-mix').value) / 100;
+  const btn = document.getElementById('btn-ed-delay');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    editorPushUndo();
+    editor.current = await effectDelay(editor.current, time, feedback, mix);
+    updateEditor();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Apply Delay';
+  }
+});
+
+// Compressor
+document.getElementById('ed-comp-threshold').addEventListener('input', (e) => {
+  document.getElementById('ed-comp-threshold-val').textContent = e.target.value + ' dB';
+});
+document.getElementById('ed-comp-ratio').addEventListener('input', (e) => {
+  document.getElementById('ed-comp-ratio-val').textContent = e.target.value + ':1';
+});
+document.getElementById('ed-comp-attack').addEventListener('input', (e) => {
+  document.getElementById('ed-comp-attack-val').textContent = e.target.value + ' ms';
+});
+document.getElementById('ed-comp-release').addEventListener('input', (e) => {
+  document.getElementById('ed-comp-release-val').textContent = e.target.value + ' ms';
+});
+document.getElementById('ed-comp-makeup').addEventListener('input', (e) => {
+  document.getElementById('ed-comp-makeup-val').textContent = e.target.value + ' dB';
+});
+document.getElementById('btn-ed-compress').addEventListener('click', async () => {
+  const threshold = parseInt(document.getElementById('ed-comp-threshold').value);
+  const ratio = parseInt(document.getElementById('ed-comp-ratio').value);
+  const attack = parseInt(document.getElementById('ed-comp-attack').value);
+  const release = parseInt(document.getElementById('ed-comp-release').value);
+  const makeup = parseInt(document.getElementById('ed-comp-makeup').value);
+  const btn = document.getElementById('btn-ed-compress');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  try {
+    editorPushUndo();
+    editor.current = await effectCompress(editor.current, threshold, ratio, attack, release, makeup);
+    updateEditor();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Apply Compressor';
+  }
+});
+
+// Undo / Redo / Reset
+document.getElementById('btn-ed-undo').addEventListener('click', editorUndo);
+document.getElementById('btn-ed-redo').addEventListener('click', editorRedo);
+document.getElementById('btn-ed-reset').addEventListener('click', editorReset);
+
+// Zoom buttons
+document.getElementById('btn-zoom-in').addEventListener('click', () => editorZoom(2));
+document.getElementById('btn-zoom-out').addEventListener('click', () => editorZoom(0.5));
+document.getElementById('btn-zoom-fit').addEventListener('click', () => {
+  if (!editor.current) return;
+  editor.viewStart = 0;
+  editor.viewEnd = editor.current.length;
+  drawEditorWaveform();
+});
+document.getElementById('btn-zoom-sel').addEventListener('click', () => {
+  if (!editor.current) return;
+  const margin = Math.round((editor.trimEnd - editor.trimStart) * 0.05);
+  editor.viewStart = Math.max(0, editor.trimStart - margin);
+  editor.viewEnd = Math.min(editor.current.length, editor.trimEnd + margin);
+  drawEditorWaveform();
+});
+
+// --- Audio Decoding ---
+async function decodeToFloat32(arrayBuffer) {
+  // Decode any audio file to mono float32 at target sample rate
+  const tmpCtx = new OfflineAudioContext(1, 1, SAMPLE_RATE);
+  const decoded = await tmpCtx.decodeAudioData(arrayBuffer.slice(0));
+  const numFrames = Math.round(decoded.duration * SAMPLE_RATE);
+  const offCtx = new OfflineAudioContext(1, numFrames, SAMPLE_RATE);
+  const src = offCtx.createBufferSource();
+  src.buffer = decoded;
+  src.connect(offCtx.destination);
+  src.start();
+  const rendered = await offCtx.startRendering();
+  return rendered.getChannelData(0);
+}
+
+// --- WAV Export ---
+function createWavBlob(pcmData, numSamples) {
+  const dataSize = numSamples * 2;
+  const buffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buffer);
+
+  // RIFF header
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, 36 + dataSize, true);
+  writeString(view, 8, 'WAVE');
+
+  // fmt chunk
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);        // chunk size
+  view.setUint16(20, 1, true);         // PCM format
+  view.setUint16(22, 1, true);         // mono
+  view.setUint32(24, SAMPLE_RATE, true);
+  view.setUint32(28, SAMPLE_RATE * 2, true); // byte rate
+  view.setUint16(32, 2, true);         // block align
+  view.setUint16(34, 16, true);        // bits per sample
+
+  // data chunk
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+  new Uint8Array(buffer, 44).set(pcmData.subarray(0, dataSize));
+
+  return new Blob([buffer], { type: 'audio/wav' });
+}
+
+function writeString(view, offset, string) {
+  for (let i = 0; i < string.length; i++) {
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+}
+
+// --- Connect ---
+async function connect() {
+  try {
+    device = await navigator.usb.requestDevice({
+      filters: [
+        { vendorId: VENDOR_ID, productId: PRODUCT_ID_RP2040 },
+        { vendorId: VENDOR_ID, productId: PRODUCT_ID_RP2350 },
+      ]
+    });
+
+    await device.open();
+    log(`Device opened: ${device.productName || 'PGB-1'}`);
+
+    // Select configuration
+    if (device.configuration === null) {
+      await device.selectConfiguration(1);
+    }
+
+    // Find picoboot interface (vendor class 0xFF with 2 endpoints)
+    const config = device.configuration;
+    let found = false;
+
+    for (const iface of config.interfaces) {
+      const alt = iface.alternate;
+      if (alt.interfaceClass === 0xFF && alt.endpoints.length === 2) {
+        interfaceNum = iface.interfaceNumber;
+        for (const ep of alt.endpoints) {
+          if (ep.direction === 'out') outEp = ep.endpointNumber;
+          if (ep.direction === 'in') inEp = ep.endpointNumber;
+        }
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      // Try interface 1 if multiple, else interface 0
+      const iface = config.interfaces.length > 1 ? config.interfaces[1] : config.interfaces[0];
+      interfaceNum = iface.interfaceNumber;
+      for (const ep of iface.alternate.endpoints) {
+        if (ep.direction === 'out') outEp = ep.endpointNumber;
+        if (ep.direction === 'in') inEp = ep.endpointNumber;
+      }
+    }
+
+    await device.claimInterface(interfaceNum);
+    log(`Claimed interface ${interfaceNum}, OUT ep${outEp}, IN ep${inEp}`);
+
+    statusEl.className = 'connected';
+    statusEl.querySelector('span').textContent = `Connected: ${device.productName || 'PGB-1'}`;
+    btnRefresh.disabled = false;
+    btnUpload.disabled = false;
+    btnBackup.disabled = false;
+    btnConnect.textContent = 'Disconnect';
+
+    await picobootReset();
+    await refreshSamples();
+
+  } catch (e) {
+    log(`Connection error: ${e.message}`, 'error');
+  }
+}
+
+async function disconnect() {
+  stopCurrentAudio();
+  sampleCache.clear();
+  if (device) {
+    try {
+      await device.close();
+    } catch (e) { /* ignore */ }
+    device = null;
+  }
+  statusEl.className = '';
+  statusEl.querySelector('span').textContent = 'Disconnected';
+  btnRefresh.disabled = true;
+  btnUpload.disabled = true;
+  btnBackup.disabled = true;
+  btnConnect.textContent = 'Connect USB';
+  listEl.innerHTML = '<div class="empty-state"><h2>No device connected</h2><p>Click "Connect USB" to connect to your PGB-1 in bootloader mode.</p></div>';
+  log('Disconnected');
+}
+
+btnConnect.addEventListener('click', async () => {
+  if (device) {
+    await disconnect();
+  } else {
+    await connect();
+  }
+});
+
+// --- Handle USB disconnect ---
+navigator.usb.addEventListener('disconnect', (e) => {
+  if (e.device === device) {
+    device = null;
+    statusEl.className = '';
+    statusEl.querySelector('span').textContent = 'Disconnected (device removed)';
+    btnRefresh.disabled = true;
+    btnUpload.disabled = true;
+    btnBackup.disabled = true;
+    btnConnect.textContent = 'Connect USB';
+    log('Device disconnected', 'error');
+  }
+});
+
+// --- Refresh / Read All Samples ---
+async function refreshSamples() {
+  if (!device) return;
+  await usbLock(async () => {
+    listEl.innerHTML = '';
+    sampleCache.clear();
+    log('Reading sample library...');
+
+    try {
+      await picobootExclusiveAccess(true);
+      await picobootExitXIP();
+
+      for (let id = 1; id <= MAX_SAMPLES; id++) {
+        log(`Reading sample #${id} metadata`);
+
+        const addr = sampleAddr(id);
+
+        // Read only the metadata area first (name + length at end of sample)
+        const metaAddr = addr + AUDIO_DATA_SIZE;
+        const metaData = await picobootRead(metaAddr, SAMPLE_NAME_SIZE + SAMPLE_LENGTH_SIZE);
+
+        // Parse name
+        let name = '';
+        for (let i = 0; i < SAMPLE_NAME_SIZE; i++) {
+          if (metaData[i] === 0) break;
+          name += String.fromCharCode(metaData[i]);
+        }
+        name = name.trim();
+
+        // Parse length
+        const lenView = new DataView(metaData.buffer, metaData.byteOffset + SAMPLE_NAME_SIZE, 4);
+        const sampleLength = lenView.getUint32(0, true);
+
+        // Check if slot is empty (all 0xFF or length=0 or length > max)
+        const maxSamples = Math.floor(AUDIO_DATA_SIZE / 2);
+        const isEmpty = sampleLength === 0 || sampleLength > maxSamples || sampleLength === 0xFFFFFFFF;
+
+        createSampleCard(id, name || `Sample ${id}`, sampleLength, isEmpty);
+      }
+
+      await picobootExclusiveAccess(false);
+      log('Sample library loaded', 'success');
+    } catch (e) {
+      log(`Error reading samples: ${e.message}`, 'error');
+      try { await picobootExclusiveAccess(false); } catch (_) {}
+    }
+  });
+}
+
+btnRefresh.addEventListener('click', refreshSamples);
+
+// --- Sample Card UI ---
+function createSampleCard(id, name, sampleLength, isEmpty) {
+  log(`CreateSampleCard #${id} "${name}" len:${sampleLength} isEmpty:${isEmpty}`);
+
+
+  const card = document.createElement('div');
+  card.className = 'sample-card';
+  card.dataset.id = id;
+
+  const maxSamples = Math.floor(AUDIO_DATA_SIZE / 2);
+  const duration = isEmpty ? 0 : (sampleLength / SAMPLE_RATE);
+  const durationStr = isEmpty ? '--' : duration.toFixed(2) + 's';
+
+  card.innerHTML = `
+    <div class="sample-header">
+      <span class="sample-id">#${id}</span>
+      <span class="sample-info">${durationStr}</span>
+    </div>
+    <div class="sample-name">${escapeHtml(name)}</div>
+    <div class="waveform-container">
+      <canvas class="waveform"></canvas>
+      <div class="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="sample-actions">
+      <button class="btn-listen" ${isEmpty ? 'disabled' : ''}>Listen</button>
+      <button class="btn-download" ${isEmpty ? 'disabled' : ''}>Download</button>
+      <button class="btn-edit">Edit</button>
+    </div>
+  `;
+  listEl.appendChild(card);
+
+  // Listen/Stop button - single handler checks current state
+  card.querySelector('.btn-listen').addEventListener('click', () => {
+    if (currentAudio && currentAudio.card === card) {
+      stopCurrentAudio();
+      card.querySelector('.progress-bar').style.width = '0%';
+      card.querySelector('.btn-listen').textContent = 'Listen';
+    } else {
+      listenSample(id, sampleLength, card);
+    }
+  });
+
+  // Download button
+  card.querySelector('.btn-download').addEventListener('click', () => downloadSample(id, name, sampleLength));
+
+  // Edit button - read sample from device and open editor, or open empty slot
+  card.querySelector('.btn-edit').addEventListener('click', () => {
+    if (isEmpty) {
+      openUploadModal();
+      document.getElementById('upload-slot').value = id;
+    } else {
+      editSample(id, name, sampleLength);
+    }
+  });
+
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// --- Listen ---
+async function listenSample(id, sampleLength, card) {
+  stopCurrentAudio();
+  if (!device) return;
+
+  const btn = card.querySelector('.btn-listen');
+  const progressBar = card.querySelector('.progress-bar');
+
+  let audioData = sampleCache.get(id);
+  if (!audioData) {
+    audioData = await usbLock(async () => {
+      btn.textContent = 'Loading...';
+      btn.disabled = true;
+      try {
+        await picobootExclusiveAccess(true);
+        await picobootExitXIP();
+
+        const addr = sampleAddr(id);
+        const bytesToRead = sampleLength * 2;
+        log(`Reading audio data for sample #${id} (${bytesToRead} bytes)...`);
+        const data = await picobootRead(addr, bytesToRead);
+
+        await picobootExclusiveAccess(false);
+        sampleCache.set(id, data);
+        return data;
+      } catch (e) {
+        log(`Error listening to sample #${id}: ${e.message}`, 'error');
+        btn.textContent = 'Listen';
+        btn.disabled = false;
+        try { await picobootExclusiveAccess(false); } catch (_) {}
+        return null;
+      }
+    });
+  }
+
+  if (!audioData) return;
+
+  const { ctx, audioBuffer } = pcmToAudioBuffer(audioData, sampleLength);
+  // Ensure AudioContext is running before starting playback
+  if (ctx.state === 'suspended') await ctx.resume();
+  const source = ctx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(ctx.destination);
+
+  // Capture start time right before starting to avoid drift
+  const startTime = ctx.currentTime;
+  source.start();
+
+  currentAudio = { source, card };
+  btn.textContent = 'Stop';
+  btn.disabled = false;
+
+  // Draw waveform
+  const canvas = card.querySelector('.waveform');
+  drawWaveform(canvas, audioData, sampleLength);
+
+  // Progress animation
+  const duration = audioBuffer.duration;
+  function updateProgress() {
+    if (!currentAudio || currentAudio.card !== card) return;
+    const elapsed = ctx.currentTime - startTime;
+    const pct = Math.min(100, (elapsed / duration) * 100);
+    progressBar.style.width = pct + '%';
+    if (elapsed < duration) {
+      requestAnimationFrame(updateProgress);
+    } else {
+      progressBar.style.width = '0%';
+      btn.textContent = 'Listen';
+      currentAudio = null;
+    }
+  }
+  requestAnimationFrame(updateProgress);
+
+  source.onended = () => {
+    progressBar.style.width = '0%';
+    btn.textContent = 'Listen';
+    if (currentAudio && currentAudio.card === card) {
+      currentAudio = null;
+    }
+  };
+}
+
+// --- Download ---
+async function downloadSample(id, name, sampleLength) {
+  if (!device) return;
+
+  let audioData = sampleCache.get(id);
+  if (!audioData) {
+    audioData = await usbLock(async () => {
+      log(`Downloading sample #${id}...`);
+      try {
+        await picobootExclusiveAccess(true);
+        await picobootExitXIP();
+
+        const addr = sampleAddr(id);
+        const bytesToRead = sampleLength * 2;
+        const data = await picobootRead(addr, bytesToRead);
+
+        await picobootExclusiveAccess(false);
+        sampleCache.set(id, data);
+        return data;
+      } catch (e) {
+        log(`Error downloading sample #${id}: ${e.message}`, 'error');
+        try { await picobootExclusiveAccess(false); } catch (_) {}
+        return null;
+      }
+    });
+  }
+
+  if (audioData) {
+    const blob = createWavBlob(audioData, sampleLength);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name || 'sample_' + id}.wav`;
+    a.click();
+    URL.revokeObjectURL(url);
+    log(`Downloaded sample #${id} as WAV`, 'success');
+  }
+}
+
+// --- Edit Sample from Device ---
+async function editSample(id, name, sampleLength) {
+  if (!device) return;
+
+  const audioData = await usbLock(async () => {
+    try {
+      await picobootExclusiveAccess(true);
+      await picobootExitXIP();
+
+      const addr = sampleAddr(id);
+      const bytesToRead = sampleLength * 2;
+      log(`Reading sample #${id} for editing (${bytesToRead} bytes)...`);
+      const data = await picobootRead(addr, bytesToRead);
+
+      await picobootExclusiveAccess(false);
+      sampleCache.set(id, data);
+      return data;
+    } catch (e) {
+      log(`Error reading sample #${id}: ${e.message}`, 'error');
+      try { await picobootExclusiveAccess(false); } catch (_) {}
+      return null;
+    }
+  });
+
+  if (!audioData) return;
+
+  // Convert int16 PCM to float32 for editor
+  const float32 = pcmToFloat32(audioData, sampleLength);
+
+  // Open the upload modal pre-configured for this slot
+  openUploadModal();
+  document.getElementById('upload-slot').value = id;
+  document.getElementById('upload-name').value = name || '';
+  document.getElementById('file-name').textContent = `Sample #${id}: ${name}`;
+
+  initEditor(float32);
+  log(`Editing sample #${id} "${name}"`, 'success');
+}
+
+// --- Backup Library as UF2 ---
+async function backupLibrary() {
+  if (!device) return;
+
+  await usbLock(async () => {
+    btnBackup.textContent = 'Reading...';
+    btnBackup.disabled = true;
+    try {
+      await picobootExclusiveAccess(true);
+      await picobootExitXIP();
+
+      const totalSize = MAX_SAMPLES * SAMPLE_SIZE;
+      const libraryData = new Uint8Array(totalSize);
+
+      for (let id = 1; id <= MAX_SAMPLES; id++) {
+        btnBackup.textContent = `Reading ${id}/${MAX_SAMPLES}...`;
+        const addr = sampleAddr(id);
+        const data = await picobootRead(addr, SAMPLE_SIZE);
+        libraryData.set(data, (id - 1) * SAMPLE_SIZE);
+      }
+
+      await picobootExclusiveAccess(false);
+
+      btnBackup.textContent = 'Generating UF2...';
+      const uf2 = generateUF2(libraryData, SAMPLE_LIBRARY_BASE);
+      const blob = new Blob([uf2], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const date = new Date().toISOString().slice(0, 10);
+      a.download = `pgb1-samples-backup-${date}.uf2`;
+      a.click();
+      URL.revokeObjectURL(url);
+      log(`Backup complete: ${uf2.length} bytes UF2 file`, 'success');
+    } catch (e) {
+      log(`Backup error: ${e.message}`, 'error');
+      try { await picobootExclusiveAccess(false); } catch (_) {}
+    } finally {
+      btnBackup.textContent = 'Backup Library';
+      btnBackup.disabled = false;
+    }
+  });
+}
+
+btnBackup.addEventListener('click', backupLibrary);
+
+// --- Upload Modal ---
+let mediaRecorder = null;
+let recordedChunks = [];
+
+function openUploadModal() {
+  document.getElementById('upload-modal').classList.add('visible');
+  hideEditor();
+  document.getElementById('file-name').textContent = '';
+  document.getElementById('file-input').value = '';
+  document.getElementById('btn-do-upload').disabled = true;
+  document.getElementById('upload-progress').style.display = 'none';
+  document.getElementById('record-status').textContent = '';
+  // Reset slider displays
+  document.getElementById('ed-gain').value = 100;
+  document.getElementById('ed-gain-val').textContent = '1.00x (0dB)';
+  document.getElementById('ed-speed').value = 100;
+  document.getElementById('ed-speed-val').textContent = '1.00x';
+  document.getElementById('ed-speed-warn').style.display = 'none';
+  document.getElementById('ed-fade-ms').value = 50;
+  document.getElementById('ed-fade-val').textContent = '50ms';
+  document.getElementById('ed-bits').value = 16;
+  document.getElementById('ed-bits-val').textContent = '16-bit';
+  document.getElementById('ed-filter-mode').value = 'lowpass';
+  document.getElementById('ed-filter-cutoff').value = 1000;
+  document.getElementById('ed-filter-cutoff-val').textContent = '1000 Hz';
+  document.getElementById('ed-filter-q').value = 10;
+  document.getElementById('ed-filter-q-val').textContent = '1.0';
+  document.getElementById('ed-filter-drive').value = 0;
+  document.getElementById('ed-filter-drive-val').textContent = 'Off';
+  document.getElementById('ed-autotrim-thresh').value = -40;
+  document.getElementById('ed-autotrim-val').textContent = '-40 dB';
+  document.getElementById('ed-reverb-decay').value = 10;
+  document.getElementById('ed-reverb-decay-val').textContent = '1.0s';
+  document.getElementById('ed-reverb-mix').value = 50;
+  document.getElementById('ed-reverb-mix-val').textContent = '50%';
+  document.getElementById('ed-delay-time').value = 250;
+  document.getElementById('ed-delay-time-val').textContent = '250 ms';
+  document.getElementById('ed-delay-feedback').value = 40;
+  document.getElementById('ed-delay-feedback-val').textContent = '40%';
+  document.getElementById('ed-delay-mix').value = 50;
+  document.getElementById('ed-delay-mix-val').textContent = '50%';
+  document.getElementById('ed-comp-threshold').value = -12;
+  document.getElementById('ed-comp-threshold-val').textContent = '-12 dB';
+  document.getElementById('ed-comp-ratio').value = 4;
+  document.getElementById('ed-comp-ratio-val').textContent = '4:1';
+  document.getElementById('ed-comp-attack').value = 10;
+  document.getElementById('ed-comp-attack-val').textContent = '10 ms';
+  document.getElementById('ed-comp-release').value = 100;
+  document.getElementById('ed-comp-release-val').textContent = '100 ms';
+  document.getElementById('ed-comp-makeup').value = 0;
+  document.getElementById('ed-comp-makeup-val').textContent = '0 dB';
+}
+
+document.getElementById('btn-upload').addEventListener('click', openUploadModal);
+
+document.getElementById('btn-cancel-upload').addEventListener('click', () => {
+  document.getElementById('upload-modal').classList.remove('visible');
+  editorStop();
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+});
+
+// File drag & drop
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length > 0) {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+});
+
+async function handleFile(file) {
+  document.getElementById('file-name').textContent = file.name;
+  log(`Loading file: ${file.name}`);
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const float32 = await decodeToFloat32(arrayBuffer);
+    initEditor(float32);
+
+    // Auto-fill name from filename
+    const nameInput = document.getElementById('upload-name');
+    if (!nameInput.value) {
+      nameInput.value = file.name.replace(/\.\w+$/, '').substring(0, 14);
+    }
+
+    log(`File loaded: ${float32.length} samples (${(float32.length / SAMPLE_RATE).toFixed(2)}s)`, 'success');
+  } catch (e) {
+    log(`Error loading file: ${e.message}`, 'error');
+    document.getElementById('file-name').textContent = 'Error: ' + e.message;
+  }
+}
+
+// --- Recording ---
+document.getElementById('btn-record').addEventListener('click', async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const arrayBuffer = await blob.arrayBuffer();
+
+      // Decode using AudioContext
+      const audioCtx = new AudioContext({ sampleRate: SAMPLE_RATE });
+      const decoded = await audioCtx.decodeAudioData(arrayBuffer);
+
+      const float32Raw = decoded.getChannelData(0);
+      const maxSamples = Math.floor(AUDIO_DATA_SIZE / 2);
+      const numSamples = Math.min(float32Raw.length, maxSamples);
+      const float32 = float32Raw.slice(0, numSamples);
+      audioCtx.close();
+
+      initEditor(float32);
+
+      document.getElementById('record-status').textContent =
+        `Recorded ${(numSamples / SAMPLE_RATE).toFixed(2)}s`;
+      document.getElementById('btn-record').disabled = false;
+      document.getElementById('btn-stop-record').disabled = true;
+      log(`Recording complete: ${numSamples} samples`, 'success');
+    };
+
+    mediaRecorder.start();
+    document.getElementById('btn-record').disabled = true;
+    document.getElementById('btn-stop-record').disabled = false;
+    document.getElementById('record-status').innerHTML =
+      '<span class="recording-indicator"></span> Recording...';
+    log('Recording started');
+
+  } catch (e) {
+    log(`Microphone error: ${e.message}`, 'error');
+  }
+});
+
+document.getElementById('btn-stop-record').addEventListener('click', () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+});
+
+// --- Upload ---
+document.getElementById('btn-do-upload').addEventListener('click', async () => {
+  if (!device || !editor.current) return;
+
+  const slotId = parseInt(document.getElementById('upload-slot').value);
+  const name = document.getElementById('upload-name').value || `Sample ${slotId}`;
+
+  if (slotId < 1 || slotId > 64) {
+    log('Invalid slot ID (must be 1-64)', 'error');
+    return;
+  }
+
+  // Get trimmed audio from editor
+  const trimmed = editor.current.slice(editor.trimStart, editor.trimEnd);
+  const maxSamples = Math.floor(AUDIO_DATA_SIZE / 2);
+  if (trimmed.length > maxSamples) {
+    log(`Sample too long (${trimmed.length} > ${maxSamples} samples). Trim or speed up first.`, 'error');
+    return;
+  }
+  const uploadPCMData = float32ToPCM(trimmed);
+  const uploadNumSamplesVal = trimmed.length;
+
+  editorStop();
+
+  const progressEl = document.getElementById('upload-progress');
+  const barEl = document.getElementById('upload-bar');
+  const textEl = document.getElementById('upload-text');
+  progressEl.style.display = 'block';
+  document.getElementById('btn-do-upload').disabled = true;
+
+  await usbLock(async () => {
+    try {
+      const sampleData = buildSampleData(uploadPCMData, name, uploadNumSamplesVal);
+      const addr = sampleAddr(slotId);
+
+      log(`Uploading sample #${slotId} "${name}" (${uploadNumSamplesVal} samples)...`);
+
+      await picobootExclusiveAccess(true);
+      await picobootExitXIP();
+
+      // Erase the flash region
+      textEl.textContent = 'Erasing flash...';
+      barEl.style.width = '10%';
+      await picobootFlashErase(addr, SAMPLE_SIZE);
+
+      // Write in chunks with progress
+      const CHUNK_SIZE = 0x1000; // 4KB
+      const totalChunks = Math.ceil(sampleData.length / CHUNK_SIZE);
+
+      for (let i = 0; i < totalChunks; i++) {
+        const offset = i * CHUNK_SIZE;
+        const chunkLen = Math.min(CHUNK_SIZE, sampleData.length - offset);
+        const chunk = sampleData.slice(offset, offset + chunkLen);
+
+        await sendCmd(PC_WRITE, {
+          cmdSize: 8,
+          addr: addr + offset,
+          size: chunkLen,
+          transferLength: chunkLen,
+        }, chunk);
+
+        const pct = 10 + (i / totalChunks) * 85;
+        barEl.style.width = pct + '%';
+        textEl.textContent = `Writing... ${Math.round(pct)}%`;
+      }
+
+      barEl.style.width = '100%';
+      textEl.textContent = 'Done!';
+
+      await picobootExclusiveAccess(false);
+
+      sampleCache.delete(slotId);
+      log(`Uploaded sample #${slotId} successfully`, 'success');
+
+      // Close modal and refresh
+      setTimeout(() => {
+        document.getElementById('upload-modal').classList.remove('visible');
+        refreshSamples();
+      }, 800);
+
+    } catch (e) {
+      log(`Upload error: ${e.message}`, 'error');
+      textEl.textContent = 'Error: ' + e.message;
+      try { await picobootExclusiveAccess(false); } catch (_) {}
+    }
+  });
+});
+
+// Close modal on overlay click
+log('PGB-1 Sample Manager ready. Connect your device in Update Mode.');
+</script>
+</body>
+</html>
