@@ -264,7 +264,7 @@ function drawSample() {
                 const mean = sum / slice.length;
                 const mean_height = mean * amp;
 
-                ctx.strokeStyle = "darkblue";
+                ctx.strokeStyle = "#265a2a";
                 ctx.beginPath();
                 ctx.moveTo(i, wav_height / 2 + mean_height);
                 ctx.lineTo(i, wav_height / 2 - mean_height);
@@ -274,7 +274,7 @@ function drawSample() {
                 const rms = Math.sqrt(sqsum / slice.length);
                 const rms_height = rms * amp;
 
-                ctx.strokeStyle = "#2cebff";
+                ctx.strokeStyle = "#2e7d32";
                 ctx.beginPath();
                 ctx.moveTo(i, wav_height / 2 + rms_height);
                 ctx.lineTo(i, wav_height / 2 - rms_height);
@@ -323,7 +323,7 @@ function drawSample() {
 
 :root {
     --background-color: #111;
-    --primary-color: #2cebff;
+    --primary-color: #2e7d32;
     --disabled-color: #979d9e;
     --secondary-color: #ff5c00;
     --tertiary-color: red;

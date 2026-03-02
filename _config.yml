@@ -6,10 +6,8 @@ url: "weenoisemakers.com"
 avatar: logo.svg
 subscribe: false
 # location:
-# google_site_verification:
-google_analytics: G-MNGKK0CVHD
 lang: en
-skin: midnight
+skin: wnm
 
 # Build settings
 markdown: kramdown
