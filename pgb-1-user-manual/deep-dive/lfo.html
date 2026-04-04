@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../static/wnm_logo.svg" as="image">
         <link rel="prefetch" href="../static/wnm_logo_white.svg" as="image">
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>LFO (Low Frequency Oscillator) - PGB-1 User Manual</title>
       <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../static/styles/furo.css?v=7bdb33bb" />
@@ -203,11 +203,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-download-pdf">
-  <a href="../pgb1-user-manual-1.2.0.pdf" class="download-pdf-link">
+  <a href="../pgb1-user-manual-1.3.0.pdf" class="download-pdf-link">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 16l-5-5 1.41-1.41L11 13.17V4h2v9.17l2.59-2.58L17 11l-5 5zm-7 4v-2h14v2H5z"/>
     </svg>
-    Download PDF<span class="pdf-version">v1.2.0</span>
+    Download PDF<span class="pdf-version">v1.3.0</span>
   </a>
 </div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
@@ -254,6 +254,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/changelogs.html">Firmware Changelogs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/engines.html">Synth Engine Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/warranty.html">Warranty &amp; Support</a></li>
 </ul>
@@ -314,6 +315,8 @@ parameter over time, adding movement and expression to your sounds.</p>
 <li><p>Lower values = slower modulation</p></li>
 <li><p>Higher values = faster modulation</p></li>
 </ul>
+<p>When using the <code class="docutils literal notranslate"><span class="pre">Random</span></code> shape (see below), the <code class="docutils literal notranslate"><span class="pre">LFO</span> <span class="pre">Rate</span></code> controls how fast the
+LFO switches from one random value to the other.</p>
 </section>
 <section id="amplitude">
 <h3>Amplitude<a class="headerlink" href="#amplitude" title="Link to this heading">¶</a></h3>
@@ -322,46 +325,17 @@ parameter over time, adding movement and expression to your sounds.</p>
 <li><p>0 = No effect</p></li>
 <li><p>Higher values = More dramatic modulation</p></li>
 </ul>
-<p>There are three modes that control the direction and range of modulation:</p>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Mode</p></th>
-<th class="head"><p>Direction</p></th>
-<th class="head"><p>Use Case</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><strong>Add</strong></p></td>
-<td><p>Base → Max</p></td>
-<td><p>Filter opening, pitch bend up</p></td>
-</tr>
-<tr class="row-odd"><td><p><strong>Bipolar</strong></p></td>
-<td><p>Min &lt;-&gt; Max (around base)</p></td>
-<td><p>Vibrato, tremolo, classic modulation</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>Sub</strong></p></td>
-<td><p>Base → Min</p></td>
-<td><p>Filter closing, ducking effects</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>There are three modes that control the direction and range of modulation
+(<code class="docutils literal notranslate"><span class="pre">Add</span></code>, <code class="docutils literal notranslate"><span class="pre">Bipolar</span></code>, <code class="docutils literal notranslate"><span class="pre">Sub</span></code>). Press <kbd class="kbd docutils literal notranslate">A</kbd> to switch to the next mode, press
+<kbd class="kbd docutils literal notranslate">B</kbd> to switch to the previous mode.</p>
 <section id="add-positive">
-<h4>Add(Positive)<a class="headerlink" href="#add-positive" title="Link to this heading">¶</a></h4>
+<h4>Add (Positive)<a class="headerlink" href="#add-positive" title="Link to this heading">¶</a></h4>
 <p>Modulation adds to the target parameter value. The LFO output ranges from the
 base value upward.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameter</span>
-<span class="n">Value</span>
-  <span class="o">^</span>
-  <span class="o">|</span>     <span class="o">/</span>\      <span class="o">/</span>\
-  <span class="o">|</span>    <span class="o">/</span>  \    <span class="o">/</span>  \
-  <span class="o">|</span>   <span class="o">/</span>    \  <span class="o">/</span>    \
-  <span class="o">|</span>  <span class="o">/</span>      \<span class="o">/</span>      \
-  <span class="o">+-------------------&gt;</span> <span class="n">Time</span>
-  <span class="n">Base</span>
-</pre></div>
-</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/lfo-add.svg"><img alt="LFO Add" src="../images/lfo-add.svg" style="width: 300px;" />
+</a>
+</figure>
 <p>Use this when you want the parameter to increase from its set value. For
 example, if filter cutoff is set to 50%, the LFO will sweep from 50% up toward
 100%.</p>
@@ -370,16 +344,10 @@ example, if filter cutoff is set to 50%, the LFO will sweep from 50% up toward
 <h4>Bipolar (Center)<a class="headerlink" href="#bipolar-center" title="Link to this heading">¶</a></h4>
 <p>Modulation oscillates around the target parameter value, going both above and
 below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameter</span>
-<span class="n">Value</span>
-  <span class="o">^</span>
-  <span class="o">|</span>   <span class="o">/</span>\      <span class="o">/</span>\
-  <span class="o">|</span> <span class="o">/</span>   \   <span class="o">/</span>   \
-<span class="o">--+------</span>\<span class="o">-/------</span>\<span class="o">-/---&gt;</span> <span class="n">Time</span>
-  <span class="o">|</span>       <span class="n">V</span>        <span class="n">V</span>
-  <span class="n">Base</span> <span class="p">(</span><span class="n">center</span><span class="p">)</span>
-</pre></div>
-</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/lfo-bipolar.svg"><img alt="LFO Add" src="../images/lfo-bipolar.svg" style="width: 300px;" />
+</a>
+</figure>
 <p>Use this for classic vibrato and tremolo effects where the parameter swings
 symmetrically around its set value. For example, if pitch is set to a note, the
 LFO will create vibrato by going sharp and flat around that pitch.</p>
@@ -388,34 +356,13 @@ LFO will create vibrato by going sharp and flat around that pitch.</p>
 <h4>Sub (Negative)<a class="headerlink" href="#sub-negative" title="Link to this heading">¶</a></h4>
 <p>Modulation subtracts from the target parameter value. The LFO output ranges
 from the base value downward.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameter</span>
-<span class="n">Value</span>
-  <span class="o">+-------------------&gt;</span> <span class="n">Time</span>
-  <span class="n">Base</span>
-  <span class="o">|</span>  \      <span class="o">/</span>\      <span class="o">/</span>
-  <span class="o">|</span>   \    <span class="o">/</span>  \    <span class="o">/</span>
-  <span class="o">|</span>    \  <span class="o">/</span>    \  <span class="o">/</span>
-  <span class="o">|</span>     \<span class="o">/</span>      \<span class="o">/</span>
-  <span class="n">v</span>
-</pre></div>
-</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/lfo-sub.svg"><img alt="LFO Add" src="../images/lfo-sub.svg" style="width: 300px;" />
+</a>
+</figure>
 <p>Use this when you want the parameter to decrease from its set value. For
 example, if filter cutoff is set to 80%, the LFO will sweep from 80% down
 toward 0%.</p>
-</section>
-<section id="navigating-between-amplitude-modes">
-<h4>Navigating Between Amplitude Modes<a class="headerlink" href="#navigating-between-amplitude-modes" title="Link to this heading">¶</a></h4>
-<p>The amplitude mode work together as a single continuous control. Starting in
-Add (Positive) mode lower the amplitude to reach zero and then press the
-<kbd class="kbd docutils literal notranslate">↓</kbd> button, this will switch to Bipolar (Center) mode. Continue to press
-down to reach zero in Bipolar mode, then press the <kbd class="kbd docutils literal notranslate">↓</kbd> button again, to
-switch to Sub (Negative) mode.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;── Increase                                            Decrease ──&gt;
-
-|-------- Add --------|-------- Bipolar --------|-------- Sub -------|
-  Strong         Weak   Strong             Weak   Weak        Strong
-</pre></div>
-</div>
 </section>
 </section>
 <section id="shape">
@@ -435,11 +382,11 @@ switch to Sub (Negative) mode.</p>
 <tr class="row-odd"><td><p>Triangle</p></td>
 <td><p>Linear rise and fall</p></td>
 </tr>
-<tr class="row-even"><td><p>Saw Up</p></td>
-<td><p>Rising ramp</p></td>
+<tr class="row-even"><td><p>Ramp Up</p></td>
+<td><p>Rising linear ramp</p></td>
 </tr>
-<tr class="row-odd"><td><p>Saw Down</p></td>
-<td><p>Falling ramp</p></td>
+<tr class="row-odd"><td><p>Ramp Down</p></td>
+<td><p>Falling linear ramp</p></td>
 </tr>
 <tr class="row-even"><td><p>Expo Up</p></td>
 <td><p>Rising exponential ramp</p></td>
@@ -447,21 +394,30 @@ switch to Sub (Negative) mode.</p>
 <tr class="row-odd"><td><p>Expo Down</p></td>
 <td><p>Falling exponential ramp</p></td>
 </tr>
+<tr class="row-even"><td><p>Random</p></td>
+<td><p>Random values</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <section id="shape-modifiers">
 <h4>Shape Modifiers<a class="headerlink" href="#shape-modifiers" title="Link to this heading">¶</a></h4>
-<p>The Shape setting also includes two important modifiers indicated by small letters:</p>
-<p><strong>S - Sync</strong></p>
-<ul class="simple">
-<li><p>When enabled, the LFO resets every time a note is played</p></li>
-<li><p>Useful for consistent modulation at note (like an envelope)</p></li>
-</ul>
+<p>The Shape setting also includes two important modifiers indicated by small
+letters:</p>
 <p><strong>L - Loop</strong></p>
 <ul class="simple">
+<li><p>Enabled with button <kbd class="kbd docutils literal notranslate">A</kbd></p></li>
 <li><p>When enabled, the LFO continuously cycles</p></li>
 <li><p>When disabled, the LFO runs once per note (like an envelope)</p></li>
+<li><p>When disable and the <code class="docutils literal notranslate"><span class="pre">Random</span></code> shape is selected, a new</p></li>
+</ul>
+<p><strong>S - Sync</strong></p>
+<ul class="simple">
+<li><p>Enabled with button <kbd class="kbd docutils literal notranslate">B</kbd></p></li>
+<li><p>When enabled, the LFO resets every time a note is played</p></li>
+<li><p>Useful for consistent modulation at note (like an envelope)</p></li>
+<li><p>Combined with the <code class="docutils literal notranslate"><span class="pre">Random</span></code> shape and <strong>loop</strong> disabled, a new random value is
+generated only when a note is played providing a “sample and hold” effect.</p></li>
 </ul>
 </section>
 </section>
@@ -499,6 +455,35 @@ switch to Sub (Negative) mode.</p>
 </div>
 </section>
 </section>
+<section id="lfo-modulation-visualization">
+<h2>LFO Modulation Visualization<a class="headerlink" href="#lfo-modulation-visualization" title="Link to this heading">¶</a></h2>
+<p>On the LFO page, when a target is selected, an LFO visualization bar is
+displayed. A continuous line, starting from left of the screen, shows the
+current base value of the target parameter. On top of it, a dotted line shows
+the effect of the LFO on the target parameter.</p>
+<p>The LFO can add to the base value (<code class="docutils literal notranslate"><span class="pre">Add</span></code> and <code class="docutils literal notranslate"><span class="pre">Bipolar</span></code> modes):</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/PGB1-OLED-lfo-visu-add.png"><img alt="LFO visualization: Add to base value" src="../images/PGB1-OLED-lfo-visu-add.png" style="width: 200px;" />
+</a>
+</figure>
+<p>The LFO can substract from the base value (<code class="docutils literal notranslate"><span class="pre">Sub</span></code> and <code class="docutils literal notranslate"><span class="pre">Bipolar</span></code> modes):</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/PGB1-OLED-lfo-visu-sub.png"><img alt="LFO visualization: Substract from base value" src="../images/PGB1-OLED-lfo-visu-sub.png" style="width: 200px;" />
+</a>
+</figure>
+<p>The LFO effect can push the parameter value to the minimum or maximum limits.
+In such cases an arrow is displayed either at the begining or the end of the
+bar.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/PGB1-OLED-lfo-visu-min.png"><img alt="LFO visualization: minimum limit" src="../images/PGB1-OLED-lfo-visu-min.png" style="width: 200px;" />
+</a>
+</figure>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../images/PGB1-OLED-lfo-visu-max.png"><img alt="LFO visualization: maximum limit" src="../images/PGB1-OLED-lfo-visu-max.png" style="width: 200px;" />
+</a>
+</figure>
+<p>This visualization can be used to understand and finely tune the LFO settings.</p>
+</section>
 <section id="lfo-modes">
 <h2>LFO Modes<a class="headerlink" href="#lfo-modes" title="Link to this heading">¶</a></h2>
 <p>By combining Sync and Loop settings, you can create different behaviors:</p>
@@ -525,20 +510,11 @@ switch to Sub (Negative) mode.</p>
 </tr>
 <tr class="row-odd"><td><p>Off</p></td>
 <td><p>Off</p></td>
-<td><p>Free-running single cycle (LFO is disabled at the end of the running cycle)</p></td>
+<td><p>LFO is disabled at the end of the running cycle</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<section id="envelope-mode">
-<h3>Envelope Mode<a class="headerlink" href="#envelope-mode" title="Link to this heading">¶</a></h3>
-<p>When Sync is ON and Loop is OFF, the LFO acts like an envelope:</p>
-<ul class="simple">
-<li><p>Triggers on each note</p></li>
-<li><p>Runs through one cycle</p></li>
-<li><p>Stays at final value until next note</p></li>
-</ul>
-</section>
 </section>
 </section>
 
@@ -602,10 +578,9 @@ switch to Sub (Negative) mode.</p>
 <li><a class="reference internal" href="#lfo-parameters">LFO Parameters</a><ul>
 <li><a class="reference internal" href="#rate">Rate</a></li>
 <li><a class="reference internal" href="#amplitude">Amplitude</a><ul>
-<li><a class="reference internal" href="#add-positive">Add(Positive)</a></li>
+<li><a class="reference internal" href="#add-positive">Add (Positive)</a></li>
 <li><a class="reference internal" href="#bipolar-center">Bipolar (Center)</a></li>
 <li><a class="reference internal" href="#sub-negative">Sub (Negative)</a></li>
-<li><a class="reference internal" href="#navigating-between-amplitude-modes">Navigating Between Amplitude Modes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#shape">Shape</a><ul>
@@ -615,10 +590,8 @@ switch to Sub (Negative) mode.</p>
 <li><a class="reference internal" href="#target">Target</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#lfo-modes">LFO Modes</a><ul>
-<li><a class="reference internal" href="#envelope-mode">Envelope Mode</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#lfo-modulation-visualization">LFO Modulation Visualization</a></li>
+<li><a class="reference internal" href="#lfo-modes">LFO Modes</a></li>
 </ul>
 </li>
 </ul>
@@ -630,9 +603,9 @@ switch to Sub (Negative) mode.</p>
       
     </aside>
   </div>
-</div><script src="../static/documentation_options.js?v=0c89912a"></script>
-    <script src="../static/doctools.js?v=9bcbadda"></script>
-    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+</div><script src="../static/documentation_options.js?v=7d5cdb73"></script>
+    <script src="../static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

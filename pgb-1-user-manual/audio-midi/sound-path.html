@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../static/wnm_logo.svg" as="image">
         <link rel="prefetch" href="../static/wnm_logo_white.svg" as="image">
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Sound Path - PGB-1 User Manual</title>
       <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../static/styles/furo.css?v=7bdb33bb" />
@@ -203,11 +203,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-download-pdf">
-  <a href="../pgb1-user-manual-1.2.0.pdf" class="download-pdf-link">
+  <a href="../pgb1-user-manual-1.3.0.pdf" class="download-pdf-link">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 16l-5-5 1.41-1.41L11 13.17V4h2v9.17l2.59-2.58L17 11l-5 5zm-7 4v-2h14v2H5z"/>
     </svg>
-    Download PDF<span class="pdf-version">v1.2.0</span>
+    Download PDF<span class="pdf-version">v1.3.0</span>
   </a>
 </div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
@@ -254,6 +254,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/changelogs.html">Firmware Changelogs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/engines.html">Synth Engine Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/warranty.html">Warranty &amp; Support</a></li>
 </ul>
@@ -295,62 +296,14 @@
         <article role="main" id="furo-main-content">
           <section id="sound-path">
 <h1>Sound Path<a class="headerlink" href="#sound-path" title="Link to this heading">¶</a></h1>
-<p>Understanding how audio flows through the PGB-1 helps you make better mixing and sound design decisions. This page explains the complete signal path from note trigger to audio output.</p>
+<p>Understanding how audio flows through the PGB-1 helps you make better mixing
+and sound design decisions. This page explains the complete signal path from
+note trigger to audio output.</p>
 <section id="overview-diagram">
 <h2>Overview Diagram<a class="headerlink" href="#overview-diagram" title="Link to this heading">¶</a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>flowchart TB
-    subgraph tracks[&quot;TRACKS 1-8&quot;]
-        seq[Step Sequencer]
-        synth[Synth Engine]
-        vol[Volume]
-        pan[Stereo Panning]
-
-        seq --&gt;|note triggers| synth
-        synth --&gt;|mono audio| vol
-        vol --&gt; pan
-    end
-
-    subgraph lfo[&quot;LFO Modulation&quot;]
-        lfomod[LFO]
-    end
-
-    subgraph inputs[&quot;AUDIO INPUTS&quot;]
-        line[Line Input]
-        mic[Internal Microphone]
-        headset[Headset Microphone]
-    end
-
-    subgraph fxbus[&quot;FX ROUTING · select one per track&quot;]
-        bypass[Bypass]
-        drive[Overdrive]
-        reverb[Reverb]
-        crush[Bitcrusher]
-    end
-
-    subgraph output[&quot;OUTPUT&quot;]
-        mix[Final Mix]
-        livefx[Live FX]
-        out[Speakers / Headphones]
-    end
-
-    lfomod -.-&gt;|synth params| synth
-    lfomod -.-&gt;|volume| vol
-    lfomod -.-&gt;|panning| pan
-
-    pan --&gt;|stereo audio| fxbus
-    line --&gt; fxbus
-    mic --&gt; fxbus
-    headset --&gt; fxbus
-
-    bypass --&gt; mix
-    drive --&gt; mix
-    reverb --&gt; mix
-    crush --&gt; mix
-
-    mix --&gt; livefx
-    livefx --&gt; out
-</pre></div>
-</div>
+<figure class="align-default">
+<img alt="Audio path diagram" src="../images/PGB-1-audio-path.svg" />
+</figure>
 </section>
 <section id="the-8-tracks">
 <h2>The 8 Tracks<a class="headerlink" href="#the-8-tracks" title="Link to this heading">¶</a></h2>
@@ -464,10 +417,13 @@ and auto-pan effects.</p>
 <p>Each track can only use one global effect at a time. Choose the effect that
 best suits each sound.</p>
 </div>
+<p>Each effect bus has a gain stage at its output controlled from the <a class="reference internal" href="../deep-dive/mixing.html"><span class="std std-doc">Project
+Mixer menu</span></a>.</p>
 </section>
 <section id="final-mix">
 <h3>5. Final Mix<a class="headerlink" href="#final-mix" title="Link to this heading">¶</a></h3>
-<p>All 4 effect buses are mixed together into a single stereo output.</p>
+<p>All 4 effect buses are mixed together into a single stereo output. A last gain
+stage is available on the stereo output.</p>
 </section>
 <section id="live-fx">
 <h3>6. Live FX<a class="headerlink" href="#live-fx" title="Link to this heading">¶</a></h3>
@@ -598,9 +554,9 @@ apply reverb or other effects to incoming audio.</p>
       
     </aside>
   </div>
-</div><script src="../static/documentation_options.js?v=0c89912a"></script>
-    <script src="../static/doctools.js?v=9bcbadda"></script>
-    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+</div><script src="../static/documentation_options.js?v=7d5cdb73"></script>
+    <script src="../static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

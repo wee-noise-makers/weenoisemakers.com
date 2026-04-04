@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../static/wnm_logo.svg" as="image">
         <link rel="prefetch" href="../static/wnm_logo_white.svg" as="image">
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Main Menu - PGB-1 User Manual</title>
       <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../static/styles/furo.css?v=7bdb33bb" />
@@ -203,11 +203,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-download-pdf">
-  <a href="../pgb1-user-manual-1.2.0.pdf" class="download-pdf-link">
+  <a href="../pgb1-user-manual-1.3.0.pdf" class="download-pdf-link">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 16l-5-5 1.41-1.41L11 13.17V4h2v9.17l2.59-2.58L17 11l-5 5zm-7 4v-2h14v2H5z"/>
     </svg>
-    Download PDF<span class="pdf-version">v1.2.0</span>
+    Download PDF<span class="pdf-version">v1.3.0</span>
   </a>
 </div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
@@ -254,6 +254,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/changelogs.html">Firmware Changelogs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/engines.html">Synth Engine Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/warranty.html">Warranty &amp; Support</a></li>
 </ul>
@@ -306,20 +307,50 @@
 <section id="projects">
 <h3>Projects<a class="headerlink" href="#projects" title="Link to this heading">¶</a></h3>
 <p>Save, load, create, delete <a class="reference internal" href="../deep-dive/projects.html"><span class="std std-doc">projects</span></a></p>
+<figure class="align-default">
+<img alt="Projects Menu" src="../images/PGB1-OLED-menu-projects-framed.png" />
+</figure>
+</section>
+<section id="project-mixer">
+<h3>Project Mixer<a class="headerlink" href="#project-mixer" title="Link to this heading">¶</a></h3>
+<p>Per project settings of gains and audio levels for tracks and track effects.
+See <a class="reference internal" href="../deep-dive/mixing.html"><span class="std std-doc">Mixing</span></a>.</p>
+<p><em>Available from firmware 1.2.0</em></p>
+<figure class="align-default">
+<img alt="Project Mixer Menu" src="../images/PGB1-OLED-menu-project-mixer-framed.png" />
+</figure>
 </section>
 <section id="custom-waveform">
 <h3>Custom Waveform<a class="headerlink" href="#custom-waveform" title="Link to this heading">¶</a></h3>
 <p>Draw and edit custom waveforms. See <a class="reference internal" href="../deep-dive/custom-waveforms.html"><span class="std std-doc">Custom
 Waveforms</span></a>.</p>
 <p><em>Available from firmware 1.2.0</em></p>
+<figure class="align-default">
+<img alt="Custom Waveform Menu" src="../images/PGB1-OLED-menu-custom-waveform-framed.png" />
+</figure>
+</section>
+<section id="live-fx-settings">
+<h3>Live FX Settings<a class="headerlink" href="#live-fx-settings" title="Link to this heading">¶</a></h3>
+<p>Customize live sequencing and mixing effects. See <a class="reference internal" href="../deep-dive/live-fx.html"><span class="std std-doc">Live
+FX</span></a>.</p>
+<p><em>Available from firmware 1.3.0</em></p>
+<figure class="align-default">
+<img alt="Live FX Settings Menu" src="../images/PGB1-OLED-menu-live-fx-settings-framed.png" />
+</figure>
 </section>
 <section id="inputs">
 <h3>Inputs<a class="headerlink" href="#inputs" title="Link to this heading">¶</a></h3>
 <p>Configure <a class="reference internal" href="../audio-midi/input.html"><span class="std std-doc">audio inputs and FX</span></a>.</p>
+<figure class="align-default">
+<img alt="Inputs Menu" src="../images/PGB1-OLED-menu-inputs-settings-framed.png" />
+</figure>
 </section>
 <section id="midi-settings">
 <h3>MIDI Settings<a class="headerlink" href="#midi-settings" title="Link to this heading">¶</a></h3>
 <p>Configure <a class="reference internal" href="../audio-midi/midi.html"><span class="std std-doc">MIDI input and output</span></a>.</p>
+<figure class="align-default">
+<img alt="MIDI Settings Menu" src="../images/PGB1-OLED-menu-midi-settings-framed.png" />
+</figure>
 </section>
 <section id="update-mode">
 <h3>Update Mode<a class="headerlink" href="#update-mode" title="Link to this heading">¶</a></h3>
@@ -328,6 +359,9 @@ Waveforms</span></a>.</p>
 <p class="admonition-title">Warning</p>
 <p>Entering update mode will save the current project and reboot the device.</p>
 </div>
+<figure class="align-default">
+<img alt="Update Mode Menu" src="../images/PGB1-OLED-menu-update-mode-framed.png" />
+</figure>
 </section>
 <section id="system-info">
 <h3>System Info<a class="headerlink" href="#system-info" title="Link to this heading">¶</a></h3>
@@ -342,6 +376,9 @@ Waveforms</span></a>.</p>
 <li><p>Support requests</p></li>
 <li><p>Troubleshooting</p></li>
 </ul>
+<figure class="align-default">
+<img alt="Update Mode Menu" src="../images/PGB1-OLED-menu-system-info-framed.png" />
+</figure>
 </section>
 </section>
 </section>
@@ -405,7 +442,9 @@ Waveforms</span></a>.</p>
 <li><a class="reference internal" href="#accessing-the-menu">Accessing the Menu</a></li>
 <li><a class="reference internal" href="#menu-items">Menu Items</a><ul>
 <li><a class="reference internal" href="#projects">Projects</a></li>
+<li><a class="reference internal" href="#project-mixer">Project Mixer</a></li>
 <li><a class="reference internal" href="#custom-waveform">Custom Waveform</a></li>
+<li><a class="reference internal" href="#live-fx-settings">Live FX Settings</a></li>
 <li><a class="reference internal" href="#inputs">Inputs</a></li>
 <li><a class="reference internal" href="#midi-settings">MIDI Settings</a></li>
 <li><a class="reference internal" href="#update-mode">Update Mode</a></li>
@@ -423,9 +462,9 @@ Waveforms</span></a>.</p>
       
     </aside>
   </div>
-</div><script src="../static/documentation_options.js?v=0c89912a"></script>
-    <script src="../static/doctools.js?v=9bcbadda"></script>
-    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+</div><script src="../static/documentation_options.js?v=7d5cdb73"></script>
+    <script src="../static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

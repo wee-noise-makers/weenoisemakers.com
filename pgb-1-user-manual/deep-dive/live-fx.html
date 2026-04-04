@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../static/wnm_logo.svg" as="image">
         <link rel="prefetch" href="../static/wnm_logo_white.svg" as="image">
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Live FX - PGB-1 User Manual</title>
       <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../static/styles/furo.css?v=7bdb33bb" />
@@ -203,11 +203,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-download-pdf">
-  <a href="../pgb1-user-manual-1.2.0.pdf" class="download-pdf-link">
+  <a href="../pgb1-user-manual-1.3.0.pdf" class="download-pdf-link">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 16l-5-5 1.41-1.41L11 13.17V4h2v9.17l2.59-2.58L17 11l-5 5zm-7 4v-2h14v2H5z"/>
     </svg>
-    Download PDF<span class="pdf-version">v1.2.0</span>
+    Download PDF<span class="pdf-version">v1.3.0</span>
   </a>
 </div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
@@ -254,6 +254,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/changelogs.html">Firmware Changelogs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/engines.html">Synth Engine Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/warranty.html">Warranty &amp; Support</a></li>
 </ul>
@@ -305,8 +306,10 @@ dynamic performances.</p>
 <h2>Effect Categories<a class="headerlink" href="#effect-categories" title="Link to this heading">¶</a></h2>
 <p>Effects are split into two categories:</p>
 <ul class="simple">
-<li><p><strong>Sequencing Effects</strong> (left side: 1-4, 9-12) - Affect pattern playback</p></li>
-<li><p><strong>Mixing Effects</strong> (right side: 5-8, 13-16) - Affect audio output</p></li>
+<li><p><strong>Sequencing Effects</strong> (left side: <kbd class="kbd docutils literal notranslate">1</kbd>-<kbd class="kbd docutils literal notranslate">4</kbd>, <kbd class="kbd docutils literal notranslate">9</kbd>-<kbd class="kbd docutils literal notranslate">12</kbd>) -
+Affect pattern playback</p></li>
+<li><p><strong>Mixing Effects</strong> (right side: <kbd class="kbd docutils literal notranslate">5</kbd>-<kbd class="kbd docutils literal notranslate">8</kbd>, <kbd class="kbd docutils literal notranslate">13</kbd>-<kbd class="kbd docutils literal notranslate">16</kbd>) -
+Affect audio output</p></li>
 </ul>
 </section>
 <section id="sequencing-effects">
@@ -379,8 +382,12 @@ another speed.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The auto-fill effects work with drum tracks (Kikc, Snare, Hihat) while the Fill
-Steps can be used on any track.</p>
+<p>The auto-fill effects work on selected tracks (Kick, Snare, Hihat by default)
+while the Fill Steps can be used on any track.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can configure the auto-fill tracks in <code class="docutils literal notranslate"><span class="pre">Menu</span> <span class="pre">-&gt;</span> <span class="pre">Live</span> <span class="pre">FX</span> <span class="pre">Settings</span></code>.</p>
 </div>
 </section>
 </section>
@@ -413,6 +420,11 @@ Steps can be used on any track.</p>
 </tbody>
 </table>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can configure the cutoff frequency and resonance of each filter in
+<code class="docutils literal notranslate"><span class="pre">Menu</span> <span class="pre">-&gt;</span> <span class="pre">Live</span> <span class="pre">FX</span> <span class="pre">Settings</span></code>.</p>
+</div>
 </section>
 <section id="filter-sweeps">
 <h3>Filter Sweeps<a class="headerlink" href="#filter-sweeps" title="Link to this heading">¶</a></h3>
@@ -441,6 +453,11 @@ Steps can be used on any track.</p>
 </tbody>
 </table>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can configure the frequency and amplitude of filter sweep in
+<code class="docutils literal notranslate"><span class="pre">Menu</span> <span class="pre">-&gt;</span> <span class="pre">Live</span> <span class="pre">FX</span> <span class="pre">Settings</span></code>.</p>
+</div>
 </section>
 <section id="stutter-effects">
 <h3>Stutter Effects<a class="headerlink" href="#stutter-effects" title="Link to this heading">¶</a></h3>
@@ -454,17 +471,60 @@ Steps can be used on any track.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">8</kbd></p></td>
-<td><p>Stutter 1</p></td>
+<td><p>Stutter A</p></td>
 <td><p>Short audio repeat effect</p></td>
 </tr>
 <tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">16</kbd></p></td>
-<td><p>Stutter 2</p></td>
+<td><p>Stutter B</p></td>
 <td><p>Variation of stutter</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can configure the stutter patterns in <code class="docutils literal notranslate"><span class="pre">Menu</span> <span class="pre">-&gt;</span> <span class="pre">Live</span> <span class="pre">FX</span> <span class="pre">Settings</span></code>.</p>
+</div>
 </section>
+</section>
+<section id="live-fx-settings">
+<h2>Live FX Settings<a class="headerlink" href="#live-fx-settings" title="Link to this heading">¶</a></h2>
+<p><em>Available from firmware 1.3.0</em></p>
+<p>You can configure various parameters of the live effects in a dedicated menu.
+Press <kbd class="kbd docutils literal notranslate">menu</kbd> and navigate to the <code class="docutils literal notranslate"><span class="pre">Live</span> <span class="pre">FX</span> <span class="pre">Settings</span></code> page, press <kbd class="kbd docutils literal notranslate">A</kbd>.</p>
+<p>Navigate between the different pages to customize live effects:</p>
+<ul class="simple">
+<li><p><strong>Auto-Fill Tracks</strong>: Select which track is triggered by the auto-fill
+effects (<kbd class="kbd docutils literal notranslate">10</kbd>, <kbd class="kbd docutils literal notranslate">11</kbd>, <kbd class="kbd docutils literal notranslate">12</kbd>). Press <kbd class="kbd docutils literal notranslate">A</kbd> to start editing
+the selected tracks, use <kbd class="kbd docutils literal notranslate">←</kbd> and <kbd class="kbd docutils literal notranslate">→</kbd> to navigate between the
+different track, use <kbd class="kbd docutils literal notranslate">↑</kbd> to enable auto-fill for the selected track,
+use <kbd class="kbd docutils literal notranslate">↓</kbd> to disable auto-fill on the selected track, press <kbd class="kbd docutils literal notranslate">A</kbd> or
+<kbd class="kbd docutils literal notranslate">B</kbd> to end the edit.</p></li>
+<li><p>*<em>Auto-Fill Low</em>: Change the trigger probability of auto-fill low effect
+(<kbd class="kbd docutils literal notranslate">10</kbd>)</p></li>
+<li><p><strong>Auto-Fill High</strong>: Change the trigger probability of auto-fill high effect
+(<kbd class="kbd docutils literal notranslate">11</kbd>)</p></li>
+<li><p><strong>Auto-Fill Build-up</strong>: Change the start trigger probability of auto-fill
+build-up effect(<kbd class="kbd docutils literal notranslate">12</kbd>)</p></li>
+<li><p><strong>Low-Pass</strong>: Change the cutoff frequency and resonance of the low-pass
+(<kbd class="kbd docutils literal notranslate">5</kbd>) and low-pass-sweep (<kbd class="kbd docutils literal notranslate">13</kbd>) effects</p></li>
+<li><p><strong>Band-Pass</strong>: Change the cutoff frequency and resonance of the band-pass
+(<kbd class="kbd docutils literal notranslate">6</kbd>) and band-pass-sweep (<kbd class="kbd docutils literal notranslate">14</kbd>) effects</p></li>
+<li><p><strong>High-Pass</strong>: Change the cutoff frequency and resonance of the high-pass
+(<kbd class="kbd docutils literal notranslate">7</kbd>) and high-pass-sweep (<kbd class="kbd docutils literal notranslate">15</kbd>) effects</p></li>
+<li><p><strong>Auto-Filter Sweep</strong>: Change the rate and amplitude of filter sweeps
+effects (<kbd class="kbd docutils literal notranslate">13</kbd>, <kbd class="kbd docutils literal notranslate">14</kbd>, <kbd class="kbd docutils literal notranslate">15</kbd>)</p></li>
+<li><p><strong>Stutter A</strong>: Change the pattern of the first stutter effect (<kbd class="kbd docutils literal notranslate">8</kbd>).
+Press <kbd class="kbd docutils literal notranslate">A</kbd> to start editing the pattern, use <kbd class="kbd docutils literal notranslate">←</kbd> and <kbd class="kbd docutils literal notranslate">→</kbd> to
+navigate between the different steps, use <kbd class="kbd docutils literal notranslate">↑</kbd> to unmute the selected
+step, use <kbd class="kbd docutils literal notranslate">↓</kbd> to mute the selected step, press <kbd class="kbd docutils literal notranslate">A</kbd> or <kbd class="kbd docutils literal notranslate">B</kbd> to
+end the edit.</p></li>
+<li><p><strong>Stutter B</strong>: Change the pattern of the second stutter effect (<kbd class="kbd docutils literal notranslate">16</kbd>).
+See <strong>Stutter A</strong> just above for edit instructions.</p></li>
+<li><p><strong>Stutter Envelope</strong>: Change the attack (how fast the volume drops) and
+release (how fast sound comes back up) of the two sutter effects (<kbd class="kbd docutils literal notranslate">8</kbd>
+and <kbd class="kbd docutils literal notranslate">16</kbd>)</p></li>
+</ul>
 </section>
 <section id="one-effect-per-category">
 <h2>One Effect Per Category<a class="headerlink" href="#one-effect-per-category" title="Link to this heading">¶</a></h2>
@@ -494,7 +554,8 @@ chord changes.</p>
 <section id="quick-parameter-control">
 <h2>Quick Parameter Control<a class="headerlink" href="#quick-parameter-control" title="Link to this heading">¶</a></h2>
 <p>While holding <kbd class="kbd docutils literal notranslate">Cpy/FX</kbd>, the touch strip controls a single parameter for a
-selected track. This lets you perform parameter changes during Live FX.</p>
+selected track. This gives you quick and direct access to one parameter for
+live performance without having to navigate in the track settings.</p>
 <p>With this feature you can control one of:</p>
 <ul class="simple">
 <li><p>Synth parameter 1</p></li>
@@ -511,6 +572,7 @@ selected track. This lets you perform parameter changes during Live FX.</p>
 holding <kbd class="kbd docutils literal notranslate">Cpy/FX</kbd>.</p>
 <p>To change the selected parameter, use the <kbd class="kbd docutils literal notranslate">↑</kbd> or <kbd class="kbd docutils literal notranslate">↓</kbd> buttons while
 holding <kbd class="kbd docutils literal notranslate">Cpy/FX</kbd>.</p>
+<p>Use the touch strip to change the value of the selected parameter.</p>
 </section>
 <section id="performance-tips">
 <h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading">¶</a></h2>
@@ -619,6 +681,7 @@ holding <kbd class="kbd docutils literal notranslate">Cpy/FX</kbd>.</p>
 <li><a class="reference internal" href="#stutter-effects">Stutter Effects</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#live-fx-settings">Live FX Settings</a></li>
 <li><a class="reference internal" href="#one-effect-per-category">One Effect Per Category</a></li>
 <li><a class="reference internal" href="#combining-effect-categories">Combining Effect Categories</a></li>
 <li><a class="reference internal" href="#chord-progression-indicator">Chord Progression Indicator</a></li>
@@ -641,9 +704,9 @@ holding <kbd class="kbd docutils literal notranslate">Cpy/FX</kbd>.</p>
       
     </aside>
   </div>
-</div><script src="../static/documentation_options.js?v=0c89912a"></script>
-    <script src="../static/doctools.js?v=9bcbadda"></script>
-    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+</div><script src="../static/documentation_options.js?v=7d5cdb73"></script>
+    <script src="../static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>
