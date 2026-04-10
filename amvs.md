@@ -8,7 +8,7 @@ product-background: '/assets/amvs-1/wnm-amvs-1-product-image.png'
 product-description: |
 
    3D printable modular system designed to support from one to as many Volcas
-   as you want. The system is made of 5 different parts that you can combined
+   as you want. The system is made of 5 different parts that you can combine
    to create your own custom setup.
 
 ---
