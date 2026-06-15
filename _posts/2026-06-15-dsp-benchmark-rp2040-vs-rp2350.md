@@ -7,8 +7,8 @@ tags:
 - noise-nugget
 ---
 
-As announced last week, our Noise Nugget project received a grant from the
-NLnet foundation. One of the main goals of this grant is to design a new
+As announced last week, our Noise Nugget project [received a grant from the
+NLnet foundation](/blog/2026/06/02/nlnet-grant.html). One of the main goals of this grant is to design a new
 generation of hardware with a better microcontroller. The obvious choice for
 this new generation is the RP2350, the successor of the RP2040. In this post, I
 want to measure the gains we can expect with a new Noise Nugget based on the
